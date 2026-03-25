@@ -1,0 +1,4 @@
+//deze zegt tegen github welek bestanen genegeerd moeten worden (wachtwoorden en node is een te groot bestand om erop te zetten)
+
+node_modules
+.env
