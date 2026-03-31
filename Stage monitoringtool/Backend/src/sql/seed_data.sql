@@ -1,5 +1,5 @@
--- Wachtwoord voor iedereen is: Test1234
--- (bcrypt hash van "Test1234")
+-- Wachtwoord voor iedereen is: password
+-- (bcrypt hash van "password")
 INSERT INTO users (naam, email, wachtwoord_hash, rol, eerste_login) VALUES
 ('Admin Systeem',   'admin@ehb.be',    '$2b$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'admin',      0),
 ('Jan Commissie',   'commissie@ehb.be','$2b$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'commissie',  0),
