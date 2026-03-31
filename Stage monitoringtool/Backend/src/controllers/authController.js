@@ -1,38 +1,53 @@
-const bcrypt = require("bcrypt")
-const User = require("../models/user")
+import bcrypt from 'bcrypt';
+import pool from '../config/db.js';
 
-//register flow
-exports.register = async (req, res) => {
-    const {email, wachtwoord} = req.body
-    if (!email || !wachtwoord) {return res.status(400).json({ message: "Email en wachtwoord verplicht" })}
-    try {
-        const hash = await bcrypt.hash(wachtwoord, 10)
-        const existingUser = await User.findByEmail(email)
-        if (existingUser) {return res.status(400).json({ message: "Email bestaat al" })}
-        await User.create({email, wachtwoord_hash: hash})
-        res.status(201).json({message: "Gebruiker aangemaakt"})
-    } catch (error) {
-        res.status(500).json({message: "Serverfout"})
+export const login = async (req, res) => {
+  const { email, wachtwoord } = req.body;
+
+  // Validatie
+  if (!email || !wachtwoord) {
+    return res.status(400).json({ error: 'E-mail en wachtwoord zijn verplicht' });
+  }
+
+  try {
+    // Gebruiker opzoeken
+    const [rows] = await pool.query(
+      'SELECT * FROM users WHERE email = ?',
+      [email]
+    );
+
+    if (rows.length === 0) {
+      return res.status(401).json({ error: 'Ongeldig e-mailadres of wachtwoord' });
     }
-    
-}
 
-//login flow
-exports.login = async (req, res) => {
-    // opvragen van email en wachtwoord in functie
-    const {email, wachtwoord} = req.body
-    if (!email || !wachtwoord) {return res.status(400).json({ message: "Email en wachtwoord verplicht" })}
-    try {
-        const user = await User.findByEmail(email) // zoek naar de user aan de hand van de email
-        if (!user) {return res.status(401).json({message: "Onjuiste logingegevens"})}
-        const match = await bcrypt.compare(wachtwoord, user.wachtwoord_hash) //vergelijken van wachtwoord met email
-        if (!match) {return res.status(401).json({message: "ongeldig wachtwoord"})}
-        // sessie opslaan
-        req.session.user = {id: user.id, email: user.email, rol: user.rol}
-        res.json({message: "Login succesvol", user: req.session.user})
-    } catch(err) {
-        res.status(500).json({message: "Serverfout"})
+    const user = rows[0];
+
+    // Wachtwoord vergelijken
+    const correct = await bcrypt.compare(wachtwoord, user.wachtwoord_hash);
+    if (!correct) {
+      return res.status(401).json({ error: 'Ongeldig e-mailadres of wachtwoord' });
     }
-}
 
-//
+    // Sessie opslaan
+    req.session.user = {
+      id: user.id,
+      naam: user.naam,
+      email: user.email,
+      rol: user.rol
+    };
+
+    res.json({
+      message: 'Ingelogd',
+      user: req.session.user
+    });
+
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Serverfout' });
+  }
+};
+
+export const logout = (req, res) => {
+  req.session.destroy();
+  res.json({ message: 'Uitgelogd' });
+};

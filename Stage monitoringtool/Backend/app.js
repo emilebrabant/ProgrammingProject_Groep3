@@ -1,38 +1,29 @@
-const express = require("express");
-const cors = require("cors");
-const session = require("express-session");
-const app = express();
-const authRoutes = require("./routes/authRoutes")
-require('dotenv').config();
+import express from 'express';
+import session from 'express-session';
+import cors from 'cors';
+import dotenv from 'dotenv';
+import authRoutes from './src/routes/authRoutes.js';
 
-// CORS config
+dotenv.config();
+
+const app = express();
+
 app.use(cors({
-  origin: "http://localhost:5173",
+  origin: 'http://localhost:5173', // React Vite poort
   credentials: true
 }));
 
 app.use(express.json());
 
-// Session setup
 app.use(session({
-  secret: process.env.SESSION_SECRET,
+  secret: process.env.SESSION_SECRET || 'geheim',
   resave: false,
   saveUninitialized: false,
-  cookie: { 
-    maxAge: 1000 * 60 * 60 * 8,
-    httpOnly: true,
-    secure: false,
-    sameSite: 'lax'
-  }
+  cookie: { secure: false }
 }));
 
-// Routes
-app.use("/api/auth", authRoutes);
+app.use('/api/auth', authRoutes);
 
-// Add error handling middleware to see what's happening
-app.use((err, req, res, next) => {
-  console.error('Error:', err);
-  res.status(500).json({ message: 'Internal server error' });
+app.listen(process.env.PORT || 3000, () => {
+  console.log(`Server draait op poort ${process.env.PORT || 3000}`);
 });
-
-app.listen(3000, () => console.log("Backend draait op poort 3000"));
