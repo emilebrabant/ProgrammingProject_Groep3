@@ -1,31 +1,49 @@
-import { useState } from 'react';
-import axios from 'axios';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import api from '../../api/axios';
+import { useAuth } from '../../context/AuthContext';
 
 export default function Login() {
   const [email, setEmail] = useState('');
   const [wachtwoord, setWachtwoord] = useState('');
   const [fout, setFout] = useState('');
   const navigate = useNavigate();
+  const { user, loading, setUser } = useAuth();
+
+  useEffect(() => {
+    if (!loading && user) {
+      if (user.eerste_login) {
+        navigate('/change-password-first-login', { replace: true });
+        return;
+      }
+      navigate(`/${user.rol}/dashboard`, { replace: true });
+    }
+  }, [loading, navigate, user]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setFout('');
 
     try {
-      const res = await axios.post(
-        'http://localhost:3000/api/auth/login',
+      const res = await api.post(
+        '/auth/login',
         { email, wachtwoord },
-        { withCredentials: true }
       );
 
+      setUser(res.data.user);
+
       // Doorsturen op basis van rol
+      if (res.data.user.eerste_login) {
+        navigate('/change-password-first-login');
+        return;
+      }
+
       const rol = res.data.user.rol;
-      if (rol === 'student')    navigate('/student/dashboard');
-      if (rol === 'admin')      navigate('/admin/dashboard');
-      if (rol === 'docent')     navigate('/docent/dashboard');
-      if (rol === 'commissie')  navigate('/commissie/dashboard');
-      if (rol === 'mentor')     navigate('/mentor/dashboard');
+      if (rol === 'student') navigate('/student/dashboard');
+      if (rol === 'admin') navigate('/admin/users');
+      if (rol === 'docent') navigate('/docent/dashboard');
+      if (rol === 'commissie') navigate('/commissie/dashboard');
+      if (rol === 'mentor') navigate('/mentor/dashboard');
 
     } catch (err) {
       setFout(err.response?.data?.error || 'Er ging iets mis');

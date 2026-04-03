@@ -1,7 +1,7 @@
 
 // Controleren of de ingelogde gebruiker de juiste rol heeft
 
-exports.heeftRol = function (toegestaneRollen) {
+export function heeftRol(toegestaneRollen) {
     return function (req, res, next) {
         if (!req.session.user) {
             return res.status(401).json({ message: "Niet ingelogd" });
@@ -11,4 +11,4 @@ exports.heeftRol = function (toegestaneRollen) {
         }
         next();
     };
-};
+}
