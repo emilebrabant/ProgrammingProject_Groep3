@@ -1,10 +1,14 @@
 // Routes die data teruggeven per rol
 
-const express = require('express');
-const pool = require('../config/db.js');
-const { isAuthenticated } = require('../middleware/authMiddleware.js');
-const { heeftRol } = require('../middleware/roleMiddleware.js');
-
+// const express = fromv('express');
+// const pool = from ('../config/db.js');
+// const { isAuthenticated } = require('../middleware/authMiddleware.js');
+// const { heeftRol } = require('../middleware/roleMiddleware.js');
+// test of dit wel werkt:
+import express from 'express';
+import pool from '../config/db.js';
+import { isAuthenticated } from '../middleware/authMiddleware.js';
+import { heeftRol } from '../middleware/roleMiddleware.js';
 const router = express.Router();
 
 //STUDENT
@@ -91,4 +95,4 @@ router.get('/admin', isAuthenticated, heeftRol(['admin']), async (req, res) => {
     }
 });
 
-module.exports = router;
+export default router;

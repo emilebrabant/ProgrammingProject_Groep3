@@ -11,8 +11,9 @@ dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 3000;
-const dashboardRoutes = require('./routes/dashboard.js');
-
+//const dashboardRoutes = require('./routes/dashboard.js');
+//test:
+import dashboardRoutes from './routes/dashboard.js';
 // CORS met correcte instellingen
 app.use(cors({
   origin: 'http://localhost:5173',
