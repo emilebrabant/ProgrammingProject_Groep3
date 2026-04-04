@@ -1,13 +1,48 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import Login from './pages/Login';
+import { BrowserRouter, Navigate, Routes, Route } from 'react-router-dom';
+import Login from './pages/login/Login';
+import { AuthProvider } from './context/AuthContext';
+import ProtectedRoute from './components/ProtectedRoute';
+import AdminUsers from './pages/admin/AdminUsers';
+import AdminCreateUser from './pages/admin/AdminCreateUser';
+import ChangePasswordFirstLogin from './pages/login/ChangePasswordFirstLogin';
 
 export default function App() {
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<Login />} />
-        <Route path="/login" element={<Login />} />
-      </Routes>
-    </BrowserRouter>
+    <AuthProvider>
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<Login />} />
+          <Route path="/login" element={<Login />} />
+          <Route
+            path="/change-password-first-login"
+            element={
+              <ProtectedRoute allowFirstLoginBypass>
+                <ChangePasswordFirstLogin />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin/dashboard"
+            element={<Navigate to="/admin/users" replace />}
+          />
+          <Route
+            path="/admin/users"
+            element={
+              <ProtectedRoute allowedRoles={['admin']}>
+                <AdminUsers />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin/users/new"
+            element={
+              <ProtectedRoute allowedRoles={['admin']}>
+                <AdminCreateUser />
+              </ProtectedRoute>
+            }
+          />
+        </Routes>
+      </BrowserRouter>
+    </AuthProvider>
   );
 }
