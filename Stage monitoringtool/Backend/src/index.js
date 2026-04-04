@@ -5,10 +5,12 @@ import dotenv from 'dotenv';
 import pool from './config/db.js';
 import authRoutes from './routes/authRoutes.js';
 
+
 dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+const dashboardRoutes = require('./routes/dashboard.js');
 
 // CORS met correcte instellingen
 app.use(cors({
@@ -45,3 +47,6 @@ app.get('/db-test', async (req, res) => {
 app.listen(PORT, () => {
   console.log(`Server draait op http://localhost:${PORT}`);
 });
+
+// Dashboard route
+app.use('/dashboard' , dashboardRoutes)
