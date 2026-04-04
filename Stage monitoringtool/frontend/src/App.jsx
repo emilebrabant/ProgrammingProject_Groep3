@@ -5,6 +5,8 @@ import ProtectedRoute from './components/ProtectedRoute';
 import AdminUsers from './pages/admin/AdminUsers';
 import AdminCreateUser from './pages/admin/AdminCreateUser';
 import ChangePasswordFirstLogin from './pages/login/ChangePasswordFirstLogin';
+import Dashboard from './pages/Dashboard';
+
 
 export default function App() {
   return (
@@ -20,7 +22,10 @@ export default function App() {
                 <ChangePasswordFirstLogin />
               </ProtectedRoute>
             }
+            
           />
+
+          
           <Route
             path="/admin/dashboard"
             element={<Navigate to="/admin/users" replace />}
@@ -40,7 +45,14 @@ export default function App() {
                 <AdminCreateUser />
               </ProtectedRoute>
             }
+            
           />
+
+          <Route path="/dashboard" element={
+    <ProtectedRoute allowedRoles={['student', 'commissie', 'docent', 'mentor']}>
+        <Dashboard />
+    </ProtectedRoute>
+} />
         </Routes>
       </BrowserRouter>
     </AuthProvider>

@@ -6,8 +6,10 @@ import CommissieDashboard from '../components/commissieDashboard';
 import DocentDashboard from '../components/DocentDashboard';
 import MentorDashboard from '../components/mentorDashboard';
 import AdminDashboard from '../components/adminDashboard';
+import { useAuth } from '../context/AuthContext';
 
-function Dashboard({ gebruiker }) {
+function Dashboard({ }) {
+    const { user: gebruiker } = useAuth();
     const [data, setData] = useState(null);
     const [laden, setLaden] = useState(true);
     const [fout, setFout] = useState(null);
