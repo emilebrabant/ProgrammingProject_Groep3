@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import api from '../../api/axios';
 import { useAuth } from '../../context/AuthContext';
 
@@ -17,6 +17,12 @@ export default function AdminUsers() {
   const [sortMode, setSortMode] = useState('role-asc');
   const [notice, setNotice] = useState({ type: '', text: '' });
   const { user, logout } = useAuth();
+  const navigate = useNavigate();
+
+  const handleLogout = async () => {
+    await logout();
+    navigate('/login', { replace: true });
+  };
 
   const showNotice = (type, text) => {
     setNotice({ type, text });
@@ -172,7 +178,7 @@ export default function AdminUsers() {
               <div className="fw-semibold">{user?.naam || 'Admin'}</div>
               <div className="text-secondary small">{user?.email}</div>
             </div>
-            <button type="button" className="btn btn-outline-dark" onClick={logout}>
+            <button type="button" className="btn btn-outline-dark" onClick={handleLogout}>
               Uitloggen
             </button>
           </div>

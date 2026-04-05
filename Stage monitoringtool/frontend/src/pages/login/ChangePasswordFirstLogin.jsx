@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import api from '../../api/axios';
 import { useAuth } from '../../context/AuthContext';
+import { getDashboardRedirect } from '../dashboardRedirect';
 
 export default function ChangePasswordFirstLogin() {
   const [huidigWachtwoord, setHuidigWachtwoord] = useState('');
@@ -13,11 +14,7 @@ export default function ChangePasswordFirstLogin() {
   const { user, setUser, logout } = useAuth();
 
   const goToRoleDashboard = (rol) => {
-    if (rol === 'admin') navigate('/admin/users');
-    if (rol === 'student') navigate('/student/dashboard');
-    if (rol === 'docent') navigate('/docent/dashboard');
-    if (rol === 'commissie') navigate('/commissie/dashboard');
-    if (rol === 'mentor') navigate('/mentor/dashboard');
+    navigate(getDashboardRedirect(rol), { replace: true });
   };
 
   const handleSubmit = async (event) => {

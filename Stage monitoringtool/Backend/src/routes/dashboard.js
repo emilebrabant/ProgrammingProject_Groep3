@@ -20,10 +20,18 @@ router.get('/student', isAuthenticated, heeftRol(['student']), async (req, res) 
             'SELECT * FROM stages WHERE student_id = ?', [userId]
         );
         const [logboeken] = await pool.query(
-            'SELECT * FROM logboeken WHERE student_id = ?', [userId]
+            `SELECT l.*
+             FROM logboeken l
+             INNER JOIN stages s ON s.id = l.stage_id
+             WHERE s.student_id = ?`,
+            [userId]
         );
         const [evaluaties] = await pool.query(
-            'SELECT * FROM evaluaties WHERE student_id = ?', [userId]
+            `SELECT e.*
+             FROM evaluaties e
+             INNER JOIN stages s ON s.id = e.stage_id
+             WHERE s.student_id = ?`,
+            [userId]
         );
         res.json({ stages, logboeken, evaluaties });
     } catch (error) {
@@ -66,13 +74,13 @@ router.get('/docent', isAuthenticated, heeftRol(['docent']), async (req, res) =>
 // Mentor ziet enkel de studenten van zijn bedrijf
 router.get('/mentor', isAuthenticated, heeftRol(['mentor']), async (req, res) => {
     try {
-        const userId = req.session.user.id;
+        const mentorNaam = req.session.user.naam;
         const [studenten] = await pool.query(
-            `SELECT u.id, u.naam, u.email, s.status, s.omschrijving
+            `SELECT u.id, u.naam, u.email, s.status, s.opdracht AS omschrijving, s.bedrijf_naam
              FROM users u
              JOIN stages s ON s.student_id = u.id
-             WHERE s.mentor_id = ?`,
-            [userId]
+             WHERE s.contactpersoon = ?`,
+            [mentorNaam]
         );
         res.json({ studenten });
     } catch (error) {

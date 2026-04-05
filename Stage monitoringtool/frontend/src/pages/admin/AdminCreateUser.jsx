@@ -18,6 +18,11 @@ export default function AdminCreateUser() {
   const navigate = useNavigate();
   const { user, logout } = useAuth();
 
+  const handleLogout = async () => {
+    await logout();
+    navigate('/login', { replace: true });
+  };
+
   const handleChange = (event) => {
     const { name, value } = event.target;
     setForm((currentForm) => ({ ...currentForm, [name]: value }));
@@ -55,7 +60,7 @@ export default function AdminCreateUser() {
               <div className="fw-semibold">{user?.naam || 'Admin'}</div>
               <div className="text-secondary small">{user?.email}</div>
             </div>
-            <button type="button" className="btn btn-outline-dark" onClick={logout}>
+            <button type="button" className="btn btn-outline-dark" onClick={handleLogout}>
               Uitloggen
             </button>
           </div>

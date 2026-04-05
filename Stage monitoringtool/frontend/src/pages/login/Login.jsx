@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import api from '../../api/axios';
 import { useAuth } from '../../context/AuthContext';
+import { getDashboardRedirect } from '../dashboardRedirect';
 
 export default function Login() {
   const [email, setEmail] = useState('');
@@ -16,7 +17,7 @@ export default function Login() {
         navigate('/change-password-first-login', { replace: true });
         return;
       }
-      navigate(`/${user.rol}/dashboard`, { replace: true });
+      navigate(getDashboardRedirect(user.rol), { replace: true });
     }
   }, [loading, navigate, user]);
 
@@ -34,16 +35,11 @@ export default function Login() {
 
       // Doorsturen op basis van rol
       if (res.data.user.eerste_login) {
-        navigate('/change-password-first-login');
+        navigate('/change-password-first-login', { replace: true });
         return;
       }
 
-      const rol = res.data.user.rol;
-      if (rol === 'student') navigate('/student/dashboard');
-      if (rol === 'admin') navigate('/admin/users');
-      if (rol === 'docent') navigate('/docent/dashboard');
-      if (rol === 'commissie') navigate('/commissie/dashboard');
-      if (rol === 'mentor') navigate('/mentor/dashboard');
+      navigate(getDashboardRedirect(res.data.user.rol), { replace: true });
 
     } catch (err) {
       setFout(err.response?.data?.error || 'Er ging iets mis');
