@@ -6,6 +6,8 @@ import AdminUsers from './pages/admin/AdminUsers';
 import AdminCreateUser from './pages/admin/AdminCreateUser';
 import ChangePasswordFirstLogin from './pages/login/ChangePasswordFirstLogin';
 import Dashboard from './pages/Dashboard';
+import StageNieuw from './pages/student/StageNieuw';
+import StageOverzicht from './pages/student/StageOverzicht'
 
 
 export default function App() {
