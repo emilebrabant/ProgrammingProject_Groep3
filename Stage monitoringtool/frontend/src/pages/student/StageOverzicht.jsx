@@ -8,12 +8,12 @@ import { getMijnStages } from '../../api/stages.js';
 //Gekleurde badge per status
 function StatusBadge({ status }) {
     const kleuren = {
-        'Ingediend': 'bg-primary',
-        'Goedgekeurd': 'bg-success',
-        'Afgekeurd': 'bg-danger',
-        'Aanpassing vereist': 'bg-warning text-dark',
+        'ingediend': 'bg-primary',
+        'goedgekeurd': 'bg-success',
+        'afgekeurd': 'bg-danger',
+        'aanpassing vereist': 'bg-warning text-dark',
 };
-    const kleur = kleuren[status] || 'bg-secondary';
+    const kleur = kleuren[status?.toLowerCase()] || 'bg-secondary';
     return <span className={`badge ${kleur}`}>{status}</span>;
 }
 

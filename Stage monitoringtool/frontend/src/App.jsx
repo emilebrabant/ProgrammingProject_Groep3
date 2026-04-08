@@ -55,6 +55,23 @@ export default function App() {
         <Dashboard />
     </ProtectedRoute>
 } />
+<Route
+            path="/student/stages"
+            element={
+              <ProtectedRoute allowedRoles={['student']}>
+                <StageOverzicht />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/student/stages/nieuw"
+            element={
+              <ProtectedRoute allowedRoles={['student']}>
+                <StageNieuw />
+              </ProtectedRoute>
+            }
+          />
+
         </Routes>
       </BrowserRouter>
     </AuthProvider>
