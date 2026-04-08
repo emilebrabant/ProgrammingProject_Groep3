@@ -1,5 +1,5 @@
 
-//formulier voor student om een stagevoorstel in te dienen
+{/*formulier voor student om een stagevoorstel in te dienen*/}
 
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -8,7 +8,7 @@ import { stageIndienen, getDocenten } from '../../api/stages.js';
 export default function StageNieuw() {
     const navigate = useNavigate();
 
-    // Formuliervelden
+    {/*Formuliervelden*/}
     const [form, setForm] = useState({
         bedrijf_naam: '',
         bedrijf_adres: '',
@@ -19,16 +19,16 @@ export default function StageNieuw() {
         docent_id: '',
     });
 
-    // inline validatiefouten per veld
+    {/*inline validatiefouten per veld*/}
     const [errors, setErrors] = useState({});
 
-    // Lijst v docenten voor de dropdown
+    {/*Lijst v docenten voor de dropdown*/}
     const [docenten, setDocenten] = useState([]);
 
-    // Algemene foutmelding van de server
+    {/*Algemene foutmelding van de server*/}
     const [serverError, setServerError] = useState('');
 
-    // Laad docenten bij openen van de pagina
+    {/*Laad docenten bij openen van de pagina*/}
     useEffect(() => {
         getDocenten()
             .then((data) => setDocenten(data.docenten))
@@ -36,14 +36,14 @@ export default function StageNieuw() {
        }, []);
 
 
-    // Veld aanpassen en fout voor dat veld wissen
+    {/*Veld aanpassen en fout voor dat veld wissen*/}
     const handleChange = (e) => {
         const { name, value } = e.target;
         setForm((prev) => ({ ...prev, [name]: value }));
         setErrors((prev) => ({ ...prev, [name]: '' }));
     };
 
-    // Controleer alle verplichte velden
+    {/*Controleer alle verplichte velden*/}
     const validate = () => {
         const newErrors = {};
 
@@ -55,7 +55,7 @@ export default function StageNieuw() {
         if (!form.eind_datum) newErrors.eind_datum = 'Einddatum is verplicht';
         if (!form.docent_id) newErrors.docent_id = 'Docent is verplicht';
 
-    // Einddatum moet na startdatum liggen
+    {/*Einddatum moet na startdatum liggen*/}
     if (form.start_datum && form.eind_datum && form.eind_datum <= form.start_datum) {
             newErrors.eind_datum = 'Einddatum moet na de startdatum liggen';
         }
@@ -63,7 +63,7 @@ export default function StageNieuw() {
         return newErrors;
     };
 
-    // Formulier indienen
+    {/*Formulier indienen*/}
     const handleSubmit = async (e) => {
         e.preventDefault();
         setServerError('');
@@ -76,7 +76,7 @@ export default function StageNieuw() {
 
         try {
             await stageIndienen(form);
-            //terug naar overzicht na indienen
+            {/*terug naar overzicht na indienen*/}
             navigate('/student/stages');
         } catch (err) {
             setServerError(err.response?.data?.error || 'Er ging iets mis, probeer opnieuw.');
@@ -88,14 +88,14 @@ export default function StageNieuw() {
             <h2>Nieuw stagevoorstel indienen</h2>
             <p className="text-muted">Vul alle verplichte velden in om je stagevoorstel in te dienen.</p>
 
-//Algemene servererror
+{/*Algemene servererror*/}
             {serverError && (
                 <div className="alert alert-danger">{serverError}</div>
             )}
 
             <form onSubmit={handleSubmit} noValidate>
 
-//Bedrijfsnaam
+{/*Bedrijfsnaam*/}
                 <div className="mb-3">
                     <label className="form-label">Bedrijfsnaam *</label>
                     <input
@@ -109,7 +109,7 @@ export default function StageNieuw() {
                 </div>
 
 
-//Adres
+{/*Adres*/}
                 <div className="mb-3">
                     <label className="form-label">Adres bedrijf *</label>
                     <input
@@ -122,7 +122,7 @@ export default function StageNieuw() {
                     {errors.bedrijf_adres && <div className="invalid-feedback">{errors.bedrijf_adres}</div>}
                 </div>
 
-//Contactpersoon
+{/*Contactpersoon*/}
                 <div className="mb-3">
                     <label className="form-label">Contactpersoon *</label>
                     <input
@@ -135,7 +135,7 @@ export default function StageNieuw() {
                  {errors.contactpersoon && <div className="invalid-feedback">{errors.contactpersoon}</div>}
                 </div>
 
-//Opdrachtsomschrijving
+{/*Opdrachtsomschrijving*/}
                 <div className="mb-3">
                     <label className="form-label">Opdrachtsomschrijving *</label>
                     <textarea
@@ -149,7 +149,7 @@ export default function StageNieuw() {
                 </div>
 
 
-//Startdatum en einddatum naast elkaar
+{/*Startdatum en einddatum naast elkaar*/}
                 <div className="row">
                     <div className="col-md-6 mb-3">
                         <label className="form-label">Startdatum *</label>
@@ -176,7 +176,7 @@ export default function StageNieuw() {
                  </div>
                 </div>
 
-//Docent dropdown
+{/*Docent dropdown*/}
                 <div className="mb-3">
                     <label className="form-label">Begeleidende docent *</label>
                     <select
@@ -193,7 +193,7 @@ export default function StageNieuw() {
                     {errors.docent_id && <div className="invalid-feedback">{errors.docent_id}</div>}
                    </div>
 
-//Knoppen
+{/*Knoppen*/}
                 <div className="d-flex gap-2">
                     <button type="submit" className="btn btn-primary">
                         Voorstel indienen

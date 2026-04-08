@@ -1,4 +1,7 @@
+import { useNavigate } from 'react-router-dom'
+
 function StudentDashboard({ data }) {
+  const navigate = useNavigate();
   const stages = data?.stages ?? [];
   const logboeken = data?.logboeken ?? [];
   const evaluaties = data?.evaluaties ?? [];
@@ -8,8 +11,11 @@ function StudentDashboard({ data }) {
       <h2 className="mb-4">Mijn Stage</h2>
 
       <div className="card mb-4">
-        <div className="card-header bg-primary text-white">
+        <div className="card-header bg-primary text-white d-flex justify-content-between align-items-center" >
           Mijn Stagevoorstel
+          <button className="btn btn-light btn-sm" onClick={() => navigate('/student/stages')}>
+            Bekijk details
+          </button>
         </div>
         <div className="card-body">
           {stages.length === 0 ? (

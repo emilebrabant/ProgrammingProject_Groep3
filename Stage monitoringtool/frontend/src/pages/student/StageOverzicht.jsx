@@ -1,11 +1,11 @@
 
-// Student ziet zijn eigen stagevoorstel met de status
+//Student ziet zijn eigen stagevoorstel met de status*
 
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getMijnStages } from '../../api/stages.js';
 
-// Gekleurde badge per status
+//Gekleurde badge per status
 function StatusBadge({ status }) {
     const kleuren = {
         'Ingediend': 'bg-primary',
@@ -23,7 +23,7 @@ export default function StageOverzicht() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
 
-// Laad eigen stages bij openen v pagina
+//Laad eigen stages bij openen v pagina
      useEffect(() => {
             getMijnStages()
                 .then((data) => setStages(data.stages))
@@ -32,7 +32,7 @@ export default function StageOverzicht() {
     }, []);
 
 
-// Knop verbergen als student al actief voorstel heeft
+//Knop verbergen als student al actief voorstel heeft
     const heeftActiefVoorstel = stages.some((s) => s.status !== 'Afgekeurd');
 
     if (loading) return <div className="container mt-4">Laden...</div>;
@@ -41,7 +41,7 @@ export default function StageOverzicht() {
         <div className="container mt-4">
             <div className="d-flex justify-content-between align-items-center mb-3">
                 <h2>Mijn stagevoorstel</h2>
-//Knop enkel zichtbaar als student nog geen actief voorstel heeft
+{/*Knop enkel zichtbaar als student nog geen actief voorstel heeft*/}
                 {!heeftActiefVoorstel && (
                     <button
                         className="btn btn-primary"
@@ -57,8 +57,9 @@ export default function StageOverzicht() {
             {stages.length === 0 ? (
 
                 
-// Nog geen voorstellen: toon melding met link
+
                 <div className="alert alert-info">
+                    {/*Nog geen voorstellen: toon melding met link*/}
                     Je hebt nog geen stagevoorstel ingediend.{' '}
                     <button className="btn btn-link p-0" onClick={() => navigate('/student/stages/nieuw')}>
                         Klik hier om er één in te dienen.
