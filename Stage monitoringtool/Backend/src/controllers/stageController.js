@@ -10,7 +10,7 @@ import {
     addHistoriek,
 } from '../models/Stage.js';
 
-
+import { createStage, getActiefVoorstelVanStudent, getStagesVanStudent, getAlleStages, getDocenten, addHistoriek, getStageById } from '../models/Stage.js';
 
 // student dient een nieuw voorstel in
 export const indienen = async (req, res) => {
@@ -102,6 +102,23 @@ export const getDocentenLijst = async (req, res) => {
         const docenten = await getDocenten();
         return res.json({ docenten });
  } catch (err) {
+        console.error(err);
+        return res.status(500).json({ error: 'Serverfout' });
+    }
+};
+
+
+// één stage ophalen op ID (voor StageDetail.jsx)
+export const getEen = async (req, res) => {
+    if (req.session.user.rol !== 'commissie' && req.session.user.rol !== 'admin') {
+        return res.status(403).json({ error: 'Geen toegang' });
+    }
+
+    try {
+        const stage = await getStageById(req.params.id);
+        if (!stage) return res.status(404).json({ error: 'Voorstel niet gevonden' });
+        return res.json({ stage });
+    } catch (err) {
         console.error(err);
         return res.status(500).json({ error: 'Serverfout' });
     }

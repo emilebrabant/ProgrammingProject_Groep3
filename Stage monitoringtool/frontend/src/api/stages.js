@@ -27,3 +27,9 @@ export const getAlleStages = async (status) => {
     const response = await axiosInstance.get('/stages', { params });
     return response.data;
 };
+
+// 1 stage ophalen op ID (voor StageDetail.jsx)
+export const getStageById = async (id) => {
+    const response = await axiosInstance.get(`/stages/${id}`);
+    return response.data;
+};
