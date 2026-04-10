@@ -11,13 +11,13 @@ function CommissieDashboard({ data }) {
       <div className="card">
         <div className="card-header bg-warning d-flex justify-content-between align-items-center">
           Alle Voorstellen
-        </div>
+        
 
        {/*Knop nr volledig overzicht */}
           <button className="btn btn-dark btn-sm" onClick={() => navigate('/commissie/stages')}>
             Bekijk overzicht
           </button>
-
+ </div>
 
         <div className="card-body">
           {data.voorstellen.length === 0 ? (
@@ -37,7 +37,7 @@ function CommissieDashboard({ data }) {
                   <tr key={voorstel.id}>
                     <td>{voorstel.student_naam}</td>
                     <td>{voorstel.bedrijf_naam}</td>
-                    <td>{voorstel.start_datum} - {voorstel.eind_datum}</td>
+                    <td>{new Date(voorstel.start_datum).toLocaleDateString('nl-BE')} - {new Date(voorstel.eind_datum).toLocaleDateString('nl-BE')}</td>
                     <td>
                       <span className="badge bg-warning text-dark">
                         {voorstel.status}

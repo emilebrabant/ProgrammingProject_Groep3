@@ -44,7 +44,11 @@ router.get('/student', isAuthenticated, heeftRol(['student']), async (req, res) 
 router.get('/commissie', isAuthenticated, heeftRol(['commissie']), async (req, res) => {
     try {
         const [voorstellen] = await pool.query(
-            'SELECT * FROM stages WHERE status = "ingediend"'
+        
+            `SELECT s.*, u.naam AS student_naam
+            FROM stages s
+            LEFT JOIN users u ON s.student_id = u.id
+            WHERE s.status = 'ingediend'`
         );
         res.json({ voorstellen });
     } catch (error) {
