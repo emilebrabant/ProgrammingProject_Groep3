@@ -8,6 +8,8 @@ import ChangePasswordFirstLogin from './pages/login/ChangePasswordFirstLogin';
 import Dashboard from './pages/Dashboard';
 import StageNieuw from './pages/student/StageNieuw';
 import StageOverzicht from './pages/student/StageOverzicht'
+import CommissieOverzicht from './pages/commissie/CommissieOverzicht';
+import StageDetail from './pages/commissie/StageDetail';
 
 
 export default function App() {
@@ -72,6 +74,27 @@ export default function App() {
             }
           />
 
+
+<Route
+            path="/commissie/stages"
+            element={
+              <ProtectedRoute allowedRoles={['commissie', 'admin']}>
+              <CommissieOverzicht />
+              </ProtectedRoute>
+            }
+          />
+
+
+  <Route
+            path="/commissie/stages/:id"
+            element={
+              <ProtectedRoute allowedRoles={['commissie', 'admin']}>
+                <StageDetail />
+            </ProtectedRoute>
+         }
+          />
+
+        
         </Routes>
       </BrowserRouter>
     </AuthProvider>
