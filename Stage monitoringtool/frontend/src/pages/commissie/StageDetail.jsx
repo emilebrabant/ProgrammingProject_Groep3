@@ -44,7 +44,7 @@ export default function StageDetail() {
             </button>
 
        <h2>Stagevoorstel details</h2>
-
+     
             {/* Status badge */}
             <p><StatusBadge status={stage.status} /></p>
 

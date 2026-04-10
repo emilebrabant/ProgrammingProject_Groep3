@@ -41,6 +41,10 @@ export default function StageOverzicht() {
         <div className="container mt-4">
             <div className="d-flex justify-content-between align-items-center mb-3">
                 <h2>Mijn stagevoorstel</h2>
+                  {/* Terug naar dashboard */}
+           {/* Terug naar dashboard */}
+            <button className="btn btn-secondary btn-sm mb-2" onClick={() => navigate('/dashboard')}> ← Terug naar dashboard
+</button>   
 {/*Knop enkel zichtbaar als student nog geen actief voorstel heeft*/}
                 {!heeftActiefVoorstel && (
                     <button

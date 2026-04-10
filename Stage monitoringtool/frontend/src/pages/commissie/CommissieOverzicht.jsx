@@ -38,6 +38,10 @@ export default function CommissieOverzicht() {
     return (
         <div className="container mt-4">
             <h2>Overzicht stagevoostellen</h2>
+            {/* Terug naar dashboard */}
+            <button className="btn btn-secondary btn-sm mb-2" onClick={() => navigate('/dashboard')}> ← Terug naar dashboard
+</button>
+
             <p className="text-muted">Klik op een rij om het voorstel te bekijken.</p>
 
             {/* Filterknopppen per status */}
