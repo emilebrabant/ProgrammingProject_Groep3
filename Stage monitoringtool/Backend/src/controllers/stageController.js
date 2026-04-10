@@ -1,14 +1,7 @@
 
 // Verwerkt alle aanvragen rond stagevoorstellen
 
-import {
-    createStage,
-    getActiefVoorstelVanStudent,
-    getStagesVanStudent,
-    getAlleStages,
-    getDocenten,
-    addHistoriek,
-} from '../models/Stage.js';
+
 
 import { createStage, getActiefVoorstelVanStudent, getStagesVanStudent, getAlleStages, getDocenten, addHistoriek, getStageById } from '../models/Stage.js';
 

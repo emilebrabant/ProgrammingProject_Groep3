@@ -1,6 +1,5 @@
 //routes voor stagevoorstellen
 import express from 'express';
-import { indienen, getMijnStages, getAlle, getDocentenLijst } from '../controllers/stageController.js';
 import { isAuthenticated } from '../middleware/authMiddleware.js';
 import { indienen, getMijnStages, getAlle, getDocentenLijst, getEen } from '../controllers/stageController.js';
 
