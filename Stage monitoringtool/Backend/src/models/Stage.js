@@ -100,6 +100,25 @@ export const getStageById = async (id) => {
     return rows[0] || null;
 };
 
+// Volledige historiek van een stagevoorstel ophalen
+export const getStageHistoriek = async (stage_id) => {
+    const [rows] = await pool.query(
+        `SELECT h.id,
+                h.stage_id,
+                h.status,
+                h.feedback,
+                h.gewijzigd_op,
+                h.gewijzigd_door,
+                u.naam AS gewijzigd_door_naam
+         FROM stage_historiek h
+         LEFT JOIN users u ON u.id = h.gewijzigd_door
+         WHERE h.stage_id = ?
+         ORDER BY h.gewijzigd_op ASC, h.id ASC`,
+        [stage_id]
+    );
+    return rows;
+};
+
 // Historiek-entry aanmaken bij elke statuswijziging
 export const addHistoriek = async ({ stage_id, status, feedback, gewijzigd_door }) => {
     await pool.query(

@@ -39,6 +39,11 @@ export const getStageById = async (id) => {
     return response.data;
 };
 
+export const getStageHistoriek = async (id) => {
+    const response = await axiosInstance.get(`/stages/${id}/historiek`);
+    return response.data;
+};
+
 export const verwerkStageBeslissing = async (id, data) => {
     const response = await axiosInstance.patch(`/stages/${id}/beslissing`, data);
     return response.data;

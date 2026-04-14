@@ -1,8 +1,15 @@
-function AdminDashboard({ data }) {
-  return (
-    <div className="container mt-4">
-      <h2 className="mb-4">Admin Dashboard</h2>
+import { useNavigate } from 'react-router-dom';
+import AdminShell from './AdminShell';
 
+function AdminDashboard({ data }) {
+  const navigate = useNavigate();
+
+  return (
+    <AdminShell
+      title="Admin Dashboard"
+      subtitle="Overzicht van gebruikers, competenties en stagevoorstellen."
+      activeTab="dashboard"
+    >
       <div className="card mb-4">
         <div className="card-header bg-danger text-white">
           Gebruikersbeheer
@@ -59,8 +66,15 @@ function AdminDashboard({ data }) {
       </div>
 
       <div className="card mb-4">
-        <div className="card-header bg-primary text-white">
-          Alle Stages
+        <div className="card-header bg-primary text-white d-flex justify-content-between align-items-center gap-2">
+          <span>Alle Stages</span>
+          <button
+            type="button"
+            className="btn btn-light btn-sm"
+            onClick={() => navigate('/commissie/stages')}
+          >
+            Open stagehistoriek
+          </button>
         </div>
         <div className="card-body">
           <table className="table table-striped">
@@ -73,7 +87,19 @@ function AdminDashboard({ data }) {
             </thead>
             <tbody>
               {data.stages.map((stage) => (
-                <tr key={stage.id}>
+                <tr
+                  key={stage.id}
+                  role="button"
+                  tabIndex={0}
+                  style={{ cursor: 'pointer' }}
+                  onClick={() => navigate(`/commissie/stages/${stage.id}`)}
+                  onKeyDown={(event) => {
+                    if (event.key === 'Enter' || event.key === ' ') {
+                      event.preventDefault();
+                      navigate(`/commissie/stages/${stage.id}`);
+                    }
+                  }}
+                >
                   <td>{stage.bedrijf_naam}</td>
                   <td>
                     <span className="badge bg-primary">
@@ -87,7 +113,7 @@ function AdminDashboard({ data }) {
           </table>
         </div>
       </div>
-    </div>
+    </AdminShell>
   );
 }
 

@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { getStageById, verwerkStageBeslissing } from '../../api/stages.js';
+import { getStageById, getStageHistoriek, verwerkStageBeslissing } from '../../api/stages.js';
 
 //gekleurde badge per status
 function StatusBadge({ status }) {
@@ -21,6 +21,7 @@ export default function StageDetail() {
     const { id } = useParams();
     const navigate = useNavigate();
     const [stage, setStage] = useState(null);
+    const [historiek, setHistoriek] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
     const [feedback, setFeedback] = useState('');
@@ -33,8 +34,11 @@ export default function StageDetail() {
 
 //Laad de details van dit voorstel
     useEffect(() => {
-        getStageById(id)
-            .then((data) => setStage(data.stage))
+        Promise.all([getStageById(id), getStageHistoriek(id)])
+            .then(([stageData, historiekData]) => {
+                setStage(stageData.stage);
+                setHistoriek(historiekData.historiek || []);
+            })
             .catch(() => setError('Kon voorstel niet laden'))
             .finally(() => setLoading(false));
 }, [id]);
@@ -64,6 +68,8 @@ export default function StageDetail() {
             });
 
             setStage(response.stage);
+            const historiekResponse = await getStageHistoriek(id);
+            setHistoriek(historiekResponse.historiek || []);
             setActieSuccess('Actie succesvol verwerkt. Je wordt teruggestuurd naar het overzicht.');
             if (actie === 'goedkeuren') {
                 setFeedback('');
@@ -181,6 +187,38 @@ export default function StageDetail() {
                             {savingAction === 'aanpassing_vereist' ? 'Opslaan...' : 'Aanpassing vereist'}
                         </button>
                     </div>
+                </div>
+            </div>
+
+            <div className="card mb-3">
+                <div className="card-header bg-light">Statushistoriek</div>
+                <div className="card-body">
+                    {historiek.length === 0 ? (
+                        <div className="alert alert-info mb-0">Er zijn nog geen historiekregels voor dit voorstel.</div>
+                    ) : (
+                        <div className="table-responsive">
+                            <table className="table table-sm align-middle mb-0">
+                                <thead>
+                                    <tr>
+                                        <th>Status</th>
+                                        <th>Datum</th>
+                                        <th>Gewijzigd door</th>
+                                        <th>Feedback</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {historiek.map((regel) => (
+                                        <tr key={regel.id}>
+                                            <td><StatusBadge status={regel.status} /></td>
+                                            <td>{new Date(regel.gewijzigd_op).toLocaleString('nl-BE')}</td>
+                                            <td>{regel.gewijzigd_door_naam || 'Onbekend'}</td>
+                                            <td style={{ whiteSpace: 'pre-wrap' }}>{regel.feedback || '-'}</td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
+                    )}
                 </div>
             </div>
 
