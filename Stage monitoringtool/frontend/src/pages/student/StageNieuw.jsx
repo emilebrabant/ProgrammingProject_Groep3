@@ -1,49 +1,88 @@
 
-{/*formulier voor student om een stagevoorstel in te dienen*/}
-
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { stageIndienen, getDocenten } from '../../api/stages.js';
+import { useNavigate, useParams } from 'react-router-dom';
+import { stageIndienen, stageAanpassen, getDocenten, getMijnStages } from '../../api/stages.js';
+
+const EMPTY_FORM = {
+    bedrijf_naam: '',
+    bedrijf_adres: '',
+    contactpersoon: '',
+    opdracht: '',
+    start_datum: '',
+    eind_datum: '',
+    docent_id: '',
+};
+
+const toDateInputValue = (dateValue) => {
+    if (!dateValue) {
+        return '';
+    }
+
+    return new Intl.DateTimeFormat('en-CA', {
+        timeZone: 'Europe/Brussels',
+    }).format(new Date(dateValue));
+};
 
 export default function StageNieuw() {
     const navigate = useNavigate();
+    const { id } = useParams();
+    const isEditMode = Boolean(id);
 
-    {/*Formuliervelden*/}
-    const [form, setForm] = useState({
-        bedrijf_naam: '',
-        bedrijf_adres: '',
-        contactpersoon: '',
-        opdracht: '',
-        start_datum: '',
-        eind_datum: '',
-        docent_id: '',
-    });
-
-    {/*inline validatiefouten per veld*/}
+    const [form, setForm] = useState(EMPTY_FORM);
     const [errors, setErrors] = useState({});
-
-    {/*Lijst v docenten voor de dropdown*/}
     const [docenten, setDocenten] = useState([]);
-
-    {/*Algemene foutmelding van de server*/}
     const [serverError, setServerError] = useState('');
+    const [loadingStage, setLoadingStage] = useState(isEditMode);
+    const [stageInfo, setStageInfo] = useState(null);
 
-    {/*Laad docenten bij openen van de pagina*/}
     useEffect(() => {
         getDocenten()
             .then((data) => setDocenten(data.docenten))
             .catch(() => setServerError('Kon docentenlijst niet laden'));
-       }, []);
+    }, []);
 
+    useEffect(() => {
+        if (!isEditMode) {
+            return;
+        }
 
-    {/*Veld aanpassen en fout voor dat veld wissen*/}
+        setLoadingStage(true);
+        getMijnStages()
+            .then((data) => {
+                const gevondenStage = data.stages.find((stage) => String(stage.id) === String(id));
+
+                if (!gevondenStage) {
+                    setServerError('Voorstel niet gevonden');
+                    return;
+                }
+
+                const status = gevondenStage.status?.toLowerCase();
+                if (status !== 'aanpassing_vereist' && status !== 'aanpassing vereist') {
+                    setServerError('Je kan dit voorstel alleen aanpassen wanneer de status aanpassing vereist is.');
+                    return;
+                }
+
+                setStageInfo(gevondenStage);
+                setForm({
+                    bedrijf_naam: gevondenStage.bedrijf_naam || '',
+                    bedrijf_adres: gevondenStage.bedrijf_adres || '',
+                    contactpersoon: gevondenStage.contactpersoon || '',
+                    opdracht: gevondenStage.opdracht || '',
+                    start_datum: toDateInputValue(gevondenStage.start_datum),
+                    eind_datum: toDateInputValue(gevondenStage.eind_datum),
+                    docent_id: String(gevondenStage.docent_id || ''),
+                });
+            })
+            .catch(() => setServerError('Kon stagevoorstel niet laden'))
+            .finally(() => setLoadingStage(false));
+    }, [id, isEditMode]);
+
     const handleChange = (e) => {
         const { name, value } = e.target;
         setForm((prev) => ({ ...prev, [name]: value }));
         setErrors((prev) => ({ ...prev, [name]: '' }));
     };
 
-    {/*Controleer alle verplichte velden*/}
     const validate = () => {
         const newErrors = {};
 
@@ -55,15 +94,13 @@ export default function StageNieuw() {
         if (!form.eind_datum) newErrors.eind_datum = 'Einddatum is verplicht';
         if (!form.docent_id) newErrors.docent_id = 'Docent is verplicht';
 
-    {/*Einddatum moet na startdatum liggen*/}
-    if (form.start_datum && form.eind_datum && form.eind_datum <= form.start_datum) {
+        if (form.start_datum && form.eind_datum && form.eind_datum <= form.start_datum) {
             newErrors.eind_datum = 'Einddatum moet na de startdatum liggen';
         }
 
         return newErrors;
     };
 
-    {/*Formulier indienen*/}
     const handleSubmit = async (e) => {
         e.preventDefault();
         setServerError('');
@@ -75,27 +112,48 @@ export default function StageNieuw() {
         }
 
         try {
-            await stageIndienen(form);
-            {/*terug naar overzicht na indienen*/}
+            if (isEditMode) {
+                await stageAanpassen(id, form);
+            } else {
+                await stageIndienen(form);
+            }
+
             navigate('/student/stages');
         } catch (err) {
             setServerError(err.response?.data?.error || 'Er ging iets mis, probeer opnieuw.');
         }
     };
 
- return (
-        <div className="container mt-4">
-            <h2>Nieuw stagevoorstel indienen</h2>
-            <p className="text-muted">Vul alle verplichte velden in om je stagevoorstel in te dienen.</p>
+    if (loadingStage) {
+        return <div className="container mt-4">Laden...</div>;
+    }
 
-{/*Algemene servererror*/}
-            {serverError && (
-                <div className="alert alert-danger">{serverError}</div>
+    return (
+        <div className="container mt-4">
+            <div className="d-flex justify-content-between align-items-start gap-3 mb-3">
+                <div>
+                    <h2>{isEditMode ? 'Stagevoorstel aanpassen' : 'Nieuw stagevoorstel indienen'}</h2>
+                    <p className="text-muted mb-0">
+                        {isEditMode
+                            ? 'Pas je voorstel aan op basis van de feedback van de commissie en dien het opnieuw in.'
+                            : 'Vul alle verplichte velden in om je stagevoorstel in te dienen.'}
+                    </p>
+                </div>
+                <button type="button" className="btn btn-secondary" onClick={() => navigate('/student/stages')}>
+                    Terug
+                </button>
+            </div>
+
+            {stageInfo?.laatste_feedback && (
+                <div className="alert alert-warning">
+                    <div className="fw-semibold mb-1">Feedback van de commissie</div>
+                    <div style={{ whiteSpace: 'pre-wrap' }}>{stageInfo.laatste_feedback}</div>
+                </div>
             )}
 
-            <form onSubmit={handleSubmit} noValidate>
+            {serverError && <div className="alert alert-danger">{serverError}</div>}
 
-{/*Bedrijfsnaam*/}
+            <form onSubmit={handleSubmit} noValidate>
                 <div className="mb-3">
                     <label className="form-label">Bedrijfsnaam *</label>
                     <input
@@ -104,12 +162,10 @@ export default function StageNieuw() {
                         className={`form-control ${errors.bedrijf_naam ? 'is-invalid' : ''}`}
                         value={form.bedrijf_naam}
                         onChange={handleChange}
-                     />
+                    />
                     {errors.bedrijf_naam && <div className="invalid-feedback">{errors.bedrijf_naam}</div>}
                 </div>
 
-
-{/*Adres*/}
                 <div className="mb-3">
                     <label className="form-label">Adres bedrijf *</label>
                     <input
@@ -122,7 +178,6 @@ export default function StageNieuw() {
                     {errors.bedrijf_adres && <div className="invalid-feedback">{errors.bedrijf_adres}</div>}
                 </div>
 
-{/*Contactpersoon*/}
                 <div className="mb-3">
                     <label className="form-label">Contactpersoon *</label>
                     <input
@@ -131,11 +186,10 @@ export default function StageNieuw() {
                         className={`form-control ${errors.contactpersoon ? 'is-invalid' : ''}`}
                         value={form.contactpersoon}
                         onChange={handleChange}
-                  />
-                 {errors.contactpersoon && <div className="invalid-feedback">{errors.contactpersoon}</div>}
+                    />
+                    {errors.contactpersoon && <div className="invalid-feedback">{errors.contactpersoon}</div>}
                 </div>
 
-{/*Opdrachtsomschrijving*/}
                 <div className="mb-3">
                     <label className="form-label">Opdrachtsomschrijving *</label>
                     <textarea
@@ -144,12 +198,10 @@ export default function StageNieuw() {
                         className={`form-control ${errors.opdracht ? 'is-invalid' : ''}`}
                         value={form.opdracht}
                         onChange={handleChange}
-                       />
+                    />
                     {errors.opdracht && <div className="invalid-feedback">{errors.opdracht}</div>}
                 </div>
 
-
-{/*Startdatum en einddatum naast elkaar*/}
                 <div className="row">
                     <div className="col-md-6 mb-3">
                         <label className="form-label">Startdatum *</label>
@@ -161,7 +213,7 @@ export default function StageNieuw() {
                             onChange={handleChange}
                         />
                         {errors.start_datum && <div className="invalid-feedback">{errors.start_datum}</div>}
-                        </div>
+                    </div>
 
                     <div className="col-md-6 mb-3">
                         <label className="form-label">Einddatum *</label>
@@ -173,10 +225,9 @@ export default function StageNieuw() {
                             onChange={handleChange}
                         />
                         {errors.eind_datum && <div className="invalid-feedback">{errors.eind_datum}</div>}
-                 </div>
+                    </div>
                 </div>
 
-{/*Docent dropdown*/}
                 <div className="mb-3">
                     <label className="form-label">Begeleidende docent *</label>
                     <select
@@ -191,19 +242,17 @@ export default function StageNieuw() {
                         ))}
                     </select>
                     {errors.docent_id && <div className="invalid-feedback">{errors.docent_id}</div>}
-                   </div>
+                </div>
 
-{/*Knoppen*/}
                 <div className="d-flex gap-2">
                     <button type="submit" className="btn btn-primary">
-                        Voorstel indienen
+                        {isEditMode ? 'Opnieuw indienen' : 'Voorstel indienen'}
                     </button>
                     <button type="button" className="btn btn-secondary" onClick={() => navigate('/student/stages')}>
                         Annuleren
                     </button>
-               </div>
-
-         </form>
+                </div>
+            </form>
         </div>
     );
 }

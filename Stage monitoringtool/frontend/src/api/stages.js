@@ -14,6 +14,11 @@ export const stageIndienen = async (data) => {
     return response.data;
 };
 
+export const stageAanpassen = async (id, data) => {
+    const response = await axiosInstance.patch(`/stages/${id}`, data);
+    return response.data;
+};
+
 
 //stages ophalen als student
 export const getMijnStages = async () => {
@@ -31,5 +36,10 @@ export const getAlleStages = async (status) => {
 // 1 stage ophalen op ID (voor StageDetail.jsx)
 export const getStageById = async (id) => {
     const response = await axiosInstance.get(`/stages/${id}`);
+    return response.data;
+};
+
+export const verwerkStageBeslissing = async (id, data) => {
+    const response = await axiosInstance.patch(`/stages/${id}/beslissing`, data);
     return response.data;
 };

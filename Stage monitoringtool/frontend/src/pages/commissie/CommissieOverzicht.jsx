@@ -11,13 +11,20 @@ function StatusBadge({ status }) {
         'goedgekeurd': 'bg-success',
         'afgekeurd': 'bg-danger',
         'aanpassing vereist': 'bg-warning text-dark',
+        'aanpassing_vereist': 'bg-warning text-dark',
     };
     const kleur = kleuren[status?.toLowerCase()] || 'bg-secondary';
     return <span className={`badge ${kleur}`}>{status}</span>;
 }
 
 // Alle mogelijke statussen voor filterknopppen
-const STATUSSEN = ['', 'ingediend', 'goedgekeurd', 'afgekeurd', 'aanpassing vereist'];
+const STATUSSEN = [
+    { value: '', label: 'Alle' },
+    { value: 'ingediend', label: 'ingediend' },
+    { value: 'goedgekeurd', label: 'goedgekeurd' },
+    { value: 'afgekeurd', label: 'afgekeurd' },
+    { value: 'aanpassing_vereist', label: 'aanpassing vereist' },
+];
 
 export default function CommissieOverzicht() {
     const navigate = useNavigate();
@@ -48,11 +55,11 @@ export default function CommissieOverzicht() {
             <div className="mb-3 d-flex gap-2 flex-wrap">
                 {STATUSSEN.map((s) => (
                     <button
-                        key={s}
-                        className={`btn btn-sm ${statusFilter === s ? 'btn-dark' : 'btn-outline-secondary'}`}
-                        onClick={() => setStatusFilter(s)}
+                        key={s.value}
+                        className={`btn btn-sm ${statusFilter === s.value ? 'btn-dark' : 'btn-outline-secondary'}`}
+                        onClick={() => setStatusFilter(s.value)}
                     >
-                        {s === '' ? 'Alle' : s}
+                        {s.label}
              </button>
                 ))}
             </div>

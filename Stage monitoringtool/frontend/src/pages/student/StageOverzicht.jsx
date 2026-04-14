@@ -12,6 +12,7 @@ function StatusBadge({ status }) {
         'goedgekeurd': 'bg-success',
         'afgekeurd': 'bg-danger',
         'aanpassing vereist': 'bg-warning text-dark',
+    'aanpassing_vereist': 'bg-warning text-dark',
 };
     const kleur = kleuren[status?.toLowerCase()] || 'bg-secondary';
     return <span className={`badge ${kleur}`}>{status}</span>;
@@ -23,6 +24,11 @@ export default function StageOverzicht() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
 
+    const kanAanpassen = (status) => {
+        const normalized = status?.toLowerCase();
+        return normalized === 'aanpassing_vereist' || normalized === 'aanpassing vereist';
+    };
+
 //Laad eigen stages bij openen v pagina
      useEffect(() => {
             getMijnStages()
@@ -33,7 +39,7 @@ export default function StageOverzicht() {
 
 
 //Knop verbergen als student al actief voorstel heeft
-    const heeftActiefVoorstel = stages.some((s) => s.status !== 'Afgekeurd');
+    const heeftActiefVoorstel = stages.some((s) => s.status?.toLowerCase() !== 'afgekeurd');
 
     if (loading) return <div className="container mt-4">Laden...</div>;
 
@@ -78,6 +84,8 @@ export default function StageOverzicht() {
                             <th>Startdatum</th>
                             <th>Einddatum</th>
                             <th>Status</th>
+                            <th>Feedback commissie</th>
+                            <th>Acties</th>
                         </tr>
                   </thead>
                     <tbody>
@@ -88,6 +96,20 @@ export default function StageOverzicht() {
                                 <td>{new Date(stage.start_datum).toLocaleDateString('nl-BE')}</td>
                                 <td>{new Date(stage.eind_datum).toLocaleDateString('nl-BE')}</td>
                                 <td><StatusBadge status={stage.status} /></td>
+                                <td style={{ whiteSpace: 'pre-wrap' }}>{stage.laatste_feedback || '-'}</td>
+                                <td>
+                                    {kanAanpassen(stage.status) ? (
+                                        <button
+                                            type="button"
+                                            className="btn btn-sm btn-outline-primary"
+                                            onClick={() => navigate(`/student/stages/${stage.id}/aanpassen`)}
+                                        >
+                                            Aanpassen
+                                        </button>
+                                    ) : (
+                                        <span className="text-muted">-</span>
+                                    )}
+                                </td>
                             </tr>
                         ))}
                     </tbody>

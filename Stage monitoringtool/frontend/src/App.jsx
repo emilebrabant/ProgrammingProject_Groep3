@@ -73,6 +73,14 @@ export default function App() {
               </ProtectedRoute>
             }
           />
+          <Route
+            path="/student/stages/:id/aanpassen"
+            element={
+              <ProtectedRoute allowedRoles={['student']}>
+                <StageNieuw />
+              </ProtectedRoute>
+            }
+          />
 
 
 <Route

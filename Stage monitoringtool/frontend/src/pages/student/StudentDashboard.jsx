@@ -6,12 +6,25 @@ function StudentDashboard({ data }) {
   const logboeken = data?.logboeken ?? [];
   const evaluaties = data?.evaluaties ?? [];
 
+  const formatDate = (dateValue) => {
+    if (!dateValue) return '-';
+    return new Date(dateValue).toLocaleDateString('nl-BE');
+  };
+
+  const statusClass = (status) => {
+    const normalized = status?.toLowerCase();
+    if (normalized === 'goedgekeurd') return 'bg-success';
+    if (normalized === 'afgekeurd') return 'bg-danger';
+    if (normalized === 'aanpassing_vereist' || normalized === 'aanpassing vereist') return 'bg-warning text-dark';
+    return 'bg-primary';
+  };
+
   return (
     <div className="container mt-4">
       <h2 className="mb-4">Mijn Stage</h2>
 
-      <div className="card mb-4">
-        <div className="card-header bg-primary text-white d-flex justify-content-between align-items-center" >
+      <div className="card mb-4 shadow-sm">
+        <div className="card-header bg-primary text-white d-flex justify-content-between align-items-center">
           Mijn Stagevoorstel
           <button className="btn btn-light btn-sm" onClick={() => navigate('/student/stages')}>
             Bekijk details
@@ -19,15 +32,33 @@ function StudentDashboard({ data }) {
         </div>
         <div className="card-body">
           {stages.length === 0 ? (
-            <p>Nog geen stage ingediend.</p>
+            <div className="alert alert-info mb-0">Nog geen stage ingediend.</div>
           ) : (
-            stages.map((stage) => (
-              <div key={stage.id}>
-                <p><strong>Bedrijf:</strong> {stage.bedrijf_naam}</p>
-                <p><strong>Status:</strong> {stage.status}</p>
-                <p><strong>Periode:</strong> {stage.start_datum} - {stage.eind_datum}</p>
-              </div>
-            ))
+            <div className="row g-3">
+              {stages.map((stage) => (
+                <div key={stage.id} className="col-12 col-lg-6">
+                  <div className="border rounded-3 p-3 h-100 bg-light">
+                    <div className="d-flex justify-content-between align-items-start gap-3 mb-2">
+                      <div>
+                        <div className="text-uppercase text-muted small">Stagevoorstel</div>
+                        <h5 className="mb-0">{stage.bedrijf_naam}</h5>
+                      </div>
+                      <span className={`badge ${statusClass(stage.status)}`}>{stage.status}</span>
+                    </div>
+
+                    <div className="d-grid gap-1 small">
+                      <div><strong>Periode:</strong> {formatDate(stage.start_datum)} - {formatDate(stage.eind_datum)}</div>
+                      {stage.laatste_feedback && (
+                        <div className="mt-2 p-2 bg-white border rounded">
+                          <div className="fw-semibold text-muted mb-1">Laatste commissiefeedback</div>
+                          <div style={{ whiteSpace: 'pre-wrap' }}>{stage.laatste_feedback}</div>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
           )}
         </div>
       </div>
