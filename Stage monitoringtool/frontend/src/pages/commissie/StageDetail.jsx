@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { getStageById, getStageHistoriek, getStageOvereenkomstUrl, verwerkStageBeslissing } from '../../api/stages.js';
+import CommissieShell from './CommissieShell';
 
 //gekleurde badge per status
 function StatusBadge({ status }) {
@@ -92,16 +93,15 @@ export default function StageDetail() {
     if (!stage) return <div className="container mt-4"><div className="alert alert-warning">Voorstel niet gevonden.</div></div>;
 
     return (
-        <div className="container mt-4">
-
-            {/* terug knop */}
+        <CommissieShell
+            title="Stagevoorstel details"
+            subtitle="Bekijk de inhoud van het voorstel en verwerk de beslissing vanuit de commissie-shell."
+            activeTab="stages"
+        >
             <button className="btn btn-secondary mb-3" onClick={() => navigate('/commissie/stages')}>
                 ← Terug naar overzicht
             </button>
 
-       <h2>Stagevoorstel details</h2>
-     
-            {/* Status badge */}
             <p><StatusBadge status={stage.status} /></p>
 
             {stage.laatste_feedback && (
@@ -140,19 +140,6 @@ export default function StageDetail() {
                 <div className="card-header bg-light">Opdrachtsomschrijving</div>
                 <div className="card-body">
                     <p>{stage.opdracht}</p>
-                </div>
-            </div>
-
-            <div className="card mb-3">
-                <div className="card-header bg-light">Stageovereenkomst (PDF)</div>
-                <div className="card-body">
-                    {stage.overeenkomst_bestand_pad ? (
-                        <a className="btn btn-outline-primary" href={getStageOvereenkomstUrl(stage.id)} target="_blank" rel="noreferrer">
-                            Bekijk geuploade PDF
-                        </a>
-                    ) : (
-                        <div className="text-muted">Nog geen PDF geupload door de student.</div>
-                    )}
                 </div>
             </div>
 
@@ -214,6 +201,19 @@ export default function StageDetail() {
             </div>
 
             <div className="card mb-3">
+                <div className="card-header bg-light">Stageovereenkomst (PDF)</div>
+                <div className="card-body">
+                    {stage.overeenkomst_bestand_pad ? (
+                        <a className="btn btn-outline-primary" href={getStageOvereenkomstUrl(stage.id)} target="_blank" rel="noreferrer">
+                            Bekijk geuploade PDF
+                        </a>
+                    ) : (
+                        <div className="text-muted">Nog geen PDF geupload door de student.</div>
+                    )}
+                </div>
+            </div>
+
+            <div className="card mb-3">
                 <div className="card-header bg-light">Statushistoriek</div>
                 <div className="card-body">
                     {historiek.length === 0 ? (
@@ -245,6 +245,6 @@ export default function StageDetail() {
                 </div>
             </div>
 
-        </div>
+            </CommissieShell>
 );
 }

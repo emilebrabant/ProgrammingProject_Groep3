@@ -90,6 +90,9 @@ function StudentShell({ user, onLogout, title, subtitle, activeTab, children, he
               <div className="fw-semibold">{user?.naam || 'Student'}</div>
               <div className="text-secondary small">{user?.email}</div>
             </div>
+            <button type="button" className="btn btn-outline-secondary" onClick={() => window.location.reload()}>
+              Refresh
+            </button>
             <button type="button" className="btn btn-outline-dark" onClick={onLogout}>
               Uitloggen
             </button>

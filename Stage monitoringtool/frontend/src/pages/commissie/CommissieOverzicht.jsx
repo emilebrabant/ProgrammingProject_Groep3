@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getAlleStages } from '../../api/stages.js';
+import CommissieShell from './CommissieShell';
 
 // Gekleurde badge per status
 function StatusBadge({ status }) {
@@ -43,15 +44,13 @@ export default function CommissieOverzicht() {
 }, [statusFilter]);
 
     return (
-        <div className="container mt-4">
-            <h2>Overzicht stagevoostellen</h2>
-            {/* Terug naar dashboard */}
-            <button className="btn btn-secondary btn-sm mb-2" onClick={() => navigate('/dashboard')}> ← Terug naar dashboard
-</button>
-
+        <CommissieShell
+            title="Overzicht stagevoorstellen"
+            subtitle="Bekijk en filter alle ingediende voorstellen vanuit de commissie-shell."
+            activeTab="stages"
+        >
             <p className="text-muted">Klik op een rij om het voorstel te bekijken.</p>
 
-            {/* Filterknopppen per status */}
             <div className="mb-3 d-flex gap-2 flex-wrap">
                 {STATUSSEN.map((s) => (
                     <button
@@ -60,7 +59,7 @@ export default function CommissieOverzicht() {
                         onClick={() => setStatusFilter(s.value)}
                     >
                         {s.label}
-             </button>
+                    </button>
                 ))}
             </div>
 
@@ -82,7 +81,6 @@ export default function CommissieOverzicht() {
                     </thead>
                     <tbody>
                         {stages.map((stage) => (
-                            
                             <tr
                                 key={stage.id}
                                 style={{ cursor: 'pointer' }}
@@ -97,6 +95,6 @@ export default function CommissieOverzicht() {
                  </tbody>
                 </table>
             )}
-        </div>
+        </CommissieShell>
     );
 }

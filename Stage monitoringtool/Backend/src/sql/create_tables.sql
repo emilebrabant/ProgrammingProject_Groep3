@@ -18,6 +18,7 @@ CREATE TABLE stages (
   student_id INT NOT NULL,
   docent_id INT NOT NULL,
   bedrijf_naam VARCHAR(150) NOT NULL,
+  bedrijf_adres VARCHAR(255) NOT NULL,
   contactpersoon VARCHAR(100) NOT NULL,
   opdracht TEXT NOT NULL,
   start_datum DATE NOT NULL,
@@ -27,6 +28,7 @@ CREATE TABLE stages (
   FOREIGN KEY (student_id) REFERENCES users(id),
   FOREIGN KEY (docent_id) REFERENCES users(id)
 );
+
 
 -- STAGE_HISTORIEK
 CREATE TABLE stage_historiek (

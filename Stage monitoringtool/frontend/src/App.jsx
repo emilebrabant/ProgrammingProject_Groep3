@@ -7,13 +7,16 @@ import AdminCreateUser from './pages/admin/AdminCreateUser';
 import AdminStageHistoriek from './pages/admin/AdminStageHistoriek';
 import AdminStageDetail from './pages/admin/AdminStageDetail';
 import ChangePasswordFirstLogin from './pages/login/ChangePasswordFirstLogin';
-import Dashboard from './pages/Dashboard';
 import StageNieuw from './pages/student/StageNieuw';
 import StudentStagevoorstellen from './pages/student/StudentStagevoorstellen';
 import StudentLogboeken from './pages/student/StudentLogboeken';
 import StudentEvaluaties from './pages/student/StudentEvaluaties';
 import CommissieOverzicht from './pages/commissie/CommissieOverzicht';
 import StageDetail from './pages/commissie/StageDetail';
+import MentorKoppelingStudenten from './pages/mentor/MentorKoppelingStudenten';
+import MentorLogboeken from './pages/mentor/MentorLogboeken';
+import DocentStudenten from './pages/docent/DocentStudenten';
+import DocentLogboeken from './pages/docent/DocentLogboeken';
 
 
 export default function App() {
@@ -72,11 +75,39 @@ export default function App() {
             }
           />
 
-          <Route path="/dashboard" element={
-    <ProtectedRoute allowedRoles={['commissie', 'docent', 'mentor']}>
-        <Dashboard />
-    </ProtectedRoute>
-} />
+          <Route path="/dashboard" element={<Navigate to="/docent/studenten" replace />} />
+          <Route
+            path="/docent/studenten"
+            element={
+              <ProtectedRoute allowedRoles={['docent']}>
+                <DocentStudenten />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/docent/logboeken"
+            element={
+              <ProtectedRoute allowedRoles={['docent']}>
+                <DocentLogboeken />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/mentor/koppeling-studenten"
+            element={
+              <ProtectedRoute allowedRoles={['mentor']}>
+                <MentorKoppelingStudenten />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/mentor/logboeken"
+            element={
+              <ProtectedRoute allowedRoles={['mentor']}>
+                <MentorLogboeken />
+              </ProtectedRoute>
+            }
+          />
 <Route
             path="/student/stagevoorstellen"
             element={
