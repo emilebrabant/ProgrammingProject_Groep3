@@ -30,10 +30,7 @@ function AdminShell({ user, onLogout, title, subtitle, activeTab, children }) {
           <Link className={tabClass('create')} to="/admin/users/new">
             Gebruiker toevoegen
           </Link>
-          <Link className="btn btn-outline-primary" to="/dashboard">
-            Admin dashboard
-          </Link>
-          <Link className="btn btn-outline-primary" to="/commissie/stages">
+          <Link className={activeTab === 'stages' ? 'btn btn-primary' : 'btn btn-outline-primary'} to="/admin/stages">
             Stagehistoriek
           </Link>
         </div>

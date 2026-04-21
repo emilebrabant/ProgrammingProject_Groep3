@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { getStageById, getStageHistoriek, verwerkStageBeslissing } from '../../api/stages.js';
+import { getStageById, getStageHistoriek, getStageOvereenkomstUrl, verwerkStageBeslissing } from '../../api/stages.js';
 
 //gekleurde badge per status
 function StatusBadge({ status }) {
@@ -31,6 +31,8 @@ export default function StageDetail() {
 
     const status = stage?.status?.toLowerCase();
     const isFinalStatus = status === 'goedgekeurd' || status === 'afgekeurd';
+    const overeenkomstStatus = stage?.overeenkomst_status?.toLowerCase();
+    const overeenkomstIsGevalideerd = overeenkomstStatus === 'gevalideerd';
 
 //Laad de details van dit voorstel
     useEffect(() => {
@@ -142,8 +144,29 @@ export default function StageDetail() {
             </div>
 
             <div className="card mb-3">
-                <div className="card-header bg-light">Actie door commissie</div>
+                <div className="card-header bg-light">Stageovereenkomst (PDF)</div>
                 <div className="card-body">
+                    {stage.overeenkomst_bestand_pad ? (
+                        <a className="btn btn-outline-primary" href={getStageOvereenkomstUrl(stage.id)} target="_blank" rel="noreferrer">
+                            Bekijk geuploade PDF
+                        </a>
+                    ) : (
+                        <div className="text-muted">Nog geen PDF geupload door de student.</div>
+                    )}
+                </div>
+            </div>
+
+            <div className="card mb-3">
+                <div className="card-header bg-light">
+                    {overeenkomstIsGevalideerd ? 'Stageovereenkomst gevalideerd' : 'Actie door commissie'}
+                </div>
+                <div className="card-body">
+                    {overeenkomstIsGevalideerd && (
+                        <div className="alert alert-success">
+                            De stageovereenkomst is gevalideerd. Je kan de stagebeslissing nog steeds verder verwerken.
+                        </div>
+                    )}
+
                     {isFinalStatus && (
                         <div className="alert alert-info">
                             Dit voorstel heeft al een finale status ({stage.status}) en kan niet meer aangepast worden.

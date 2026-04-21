@@ -26,6 +26,8 @@ export const getActiefVoorstelVanStudent = async (student_id) => {
 export const getStagesVanStudent = async (student_id) => {
     const [rows] = await pool.query(
                 `SELECT s.*, u.naam AS docent_naam,
+                                o.bestand_pad AS overeenkomst_bestand_pad,
+                                o.status AS overeenkomst_status,
                                 (
                                         SELECT h.feedback
                                         FROM stage_historiek h
@@ -37,6 +39,7 @@ export const getStagesVanStudent = async (student_id) => {
                                 ) AS laatste_feedback
          FROM stages s
          LEFT JOIN users u ON s.docent_id = u.id
+         LEFT JOIN overeenkomsten o ON o.stage_id = s.id
          WHERE s.student_id = ?
          ORDER BY s.aangemaakt_op DESC`,
         [student_id]
@@ -50,6 +53,8 @@ export const getAlleStages = async (statusFilter) => {
         SELECT s.*,
                student.naam AS student_naam,
                              docent.naam  AS docent_naam,
+                             o.bestand_pad AS overeenkomst_bestand_pad,
+                             o.status AS overeenkomst_status,
                              (
                                         SELECT h.feedback
                                         FROM stage_historiek h
@@ -62,6 +67,7 @@ export const getAlleStages = async (statusFilter) => {
         FROM stages s
         LEFT JOIN users student ON s.student_id = student.id
         LEFT JOIN users docent  ON s.docent_id  = docent.id
+        LEFT JOIN overeenkomsten o ON o.stage_id = s.id
     `;
     const params = [];
 
@@ -82,6 +88,8 @@ export const getStageById = async (id) => {
         `SELECT s.*,
                 student.naam AS student_naam,
                                 docent.naam  AS docent_naam,
+                                o.bestand_pad AS overeenkomst_bestand_pad,
+                                o.status AS overeenkomst_status,
                                 (
                                         SELECT h.feedback
                                         FROM stage_historiek h
@@ -94,10 +102,46 @@ export const getStageById = async (id) => {
          FROM stages s
          LEFT JOIN users student ON s.student_id = student.id
          LEFT JOIN users docent  ON s.docent_id  = docent.id
+         LEFT JOIN overeenkomsten o ON o.stage_id = s.id
          WHERE s.id = ?`,
         [id]
     );
     return rows[0] || null;
+};
+
+export const getOvereenkomstByStageId = async (stage_id) => {
+    const [rows] = await pool.query(
+        `SELECT id, stage_id, bestand_pad, status, gevalideerd_door, gevalideerd_op
+         FROM overeenkomsten
+         WHERE stage_id = ?`,
+        [stage_id]
+    );
+
+    return rows[0] || null;
+};
+
+export const upsertOvereenkomst = async ({ stage_id, bestand_pad }) => {
+    await pool.query(
+        `INSERT INTO overeenkomsten (stage_id, bestand_pad, status)
+         VALUES (?, ?, 'geupload')
+         ON DUPLICATE KEY UPDATE
+             bestand_pad = VALUES(bestand_pad),
+             status = 'geupload',
+             gevalideerd_door = NULL,
+             gevalideerd_op = NULL`,
+        [stage_id, bestand_pad]
+    );
+};
+
+export const updateOvereenkomstValidatie = async ({ stage_id, status, gevalideerd_door }) => {
+    await pool.query(
+        `UPDATE overeenkomsten
+         SET status = ?,
+             gevalideerd_door = ?,
+             gevalideerd_op = NOW()
+         WHERE stage_id = ?`,
+        [status, gevalideerd_door, stage_id]
+    );
 };
 
 // Volledige historiek van een stagevoorstel ophalen

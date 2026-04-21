@@ -48,3 +48,20 @@ export const verwerkStageBeslissing = async (id, data) => {
     const response = await axiosInstance.patch(`/stages/${id}/beslissing`, data);
     return response.data;
 };
+
+export const uploadStageOvereenkomst = async (id, file) => {
+    const formData = new FormData();
+    formData.append('bestand', file);
+
+    const response = await axiosInstance.post(`/stages/${id}/overeenkomst`, formData);
+    return response.data;
+};
+
+export const getStageOvereenkomstUrl = (id) => {
+    return `${axiosInstance.defaults.baseURL}/stages/${id}/overeenkomst`;
+};
+
+export const valideerStageOvereenkomst = async (id, data) => {
+    const response = await axiosInstance.patch(`/stages/${id}/overeenkomst/validatie`, data);
+    return response.data;
+};

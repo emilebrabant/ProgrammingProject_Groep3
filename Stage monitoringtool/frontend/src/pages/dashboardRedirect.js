@@ -3,5 +3,9 @@ export function getDashboardRedirect(rol) {
     return '/admin/users';
   }
 
+  if (rol === 'student') {
+    return '/student/stagevoorstellen';
+  }
+
   return '/dashboard';
 }

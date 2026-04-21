@@ -1,16 +1,50 @@
 //routes voor stagevoorstellen
 import express from 'express';
+import multer from 'multer';
 import { isAuthenticated } from '../middleware/authMiddleware.js';
-import { indienen, getMijnStages, getAlle, getDocentenLijst, getEen, getHistoriek, verwerkBeslissing, updateMijnStage } from '../controllers/stageController.js';
+import { indienen, getMijnStages, getAlle, getDocentenLijst, getEen, getHistoriek, verwerkBeslissing, updateMijnStage, uploadOvereenkomst, downloadOvereenkomst, valideerOvereenkomst } from '../controllers/stageController.js';
 
 
     const router = express.Router();
+const upload = multer({
+    storage: multer.memoryStorage(),
+    limits: { fileSize: 10 * 1024 * 1024 },
+    fileFilter: (req, file, cb) => {
+        const bestandsnaam = file?.originalname?.toLowerCase() || '';
+        const isPdf = file.mimetype === 'application/pdf' || bestandsnaam.endsWith('.pdf');
+        if (!isPdf) {
+            return cb(new Error('Enkel PDF-bestanden zijn toegestaan'));
+        }
+        return cb(null, true);
+    },
+});
+
+const handlePdfUpload = (req, res, next) => {
+    upload.single('bestand')(req, res, (err) => {
+        if (!err) {
+            return next();
+        }
+
+        if (err.code === 'LIMIT_FILE_SIZE') {
+            return res.status(400).json({
+                error: 'Bestand is te groot. Maximum toegelaten grootte is 10 MB.',
+            });
+        }
+
+        return res.status(400).json({
+            error: err.message || 'Upload mislukt',
+        });
+    });
+};
 
 router.get('/docenten', isAuthenticated, getDocentenLijst);
 router.get('/mijn', isAuthenticated, getMijnStages);
 router.get('/', isAuthenticated, getAlle);
 router.post('/', isAuthenticated, indienen);
 router.patch('/:id', isAuthenticated, updateMijnStage);
+router.post('/:id/overeenkomst', isAuthenticated, handlePdfUpload, uploadOvereenkomst);
+router.get('/:id/overeenkomst', isAuthenticated, downloadOvereenkomst);
+router.patch('/:id/overeenkomst/validatie', isAuthenticated, valideerOvereenkomst);
 router.get('/:id/historiek', isAuthenticated, getHistoriek);
 router.get('/:id', isAuthenticated, getEen);
 router.patch('/:id/beslissing', isAuthenticated, verwerkBeslissing);

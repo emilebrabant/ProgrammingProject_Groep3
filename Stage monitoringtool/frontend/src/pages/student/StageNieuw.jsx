@@ -2,6 +2,8 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { stageIndienen, stageAanpassen, getDocenten, getMijnStages } from '../../api/stages.js';
+import { useAuth } from '../../context/AuthContext';
+import StudentShell from './StudentShell';
 
 const EMPTY_FORM = {
     bedrijf_naam: '',
@@ -27,6 +29,7 @@ export default function StageNieuw() {
     const navigate = useNavigate();
     const { id } = useParams();
     const isEditMode = Boolean(id);
+    const { user, logout } = useAuth();
 
     const [form, setForm] = useState(EMPTY_FORM);
     const [errors, setErrors] = useState({});
@@ -118,18 +121,41 @@ export default function StageNieuw() {
                 await stageIndienen(form);
             }
 
-            navigate('/student/stages');
+            navigate('/student/stagevoorstellen');
         } catch (err) {
             setServerError(err.response?.data?.error || 'Er ging iets mis, probeer opnieuw.');
         }
     };
 
+    const handleLogout = async () => {
+        await logout();
+        navigate('/login', { replace: true });
+    };
+
     if (loadingStage) {
-        return <div className="container mt-4">Laden...</div>;
+        return (
+            <StudentShell
+                user={user}
+                onLogout={handleLogout}
+                title={isEditMode ? 'Stagevoorstel aanpassen' : 'Nieuw stagevoorstel'}
+                subtitle="Dien je voorstel in of werk het bij op basis van feedback."
+                activeTab="stagevoorstellen"
+            >
+                <div>Laden...</div>
+            </StudentShell>
+        );
     }
 
     return (
-        <div className="container mt-4">
+        <StudentShell
+            user={user}
+            onLogout={handleLogout}
+            title={isEditMode ? 'Stagevoorstel aanpassen' : 'Nieuw stagevoorstel'}
+            subtitle="Dien je voorstel in of werk het bij op basis van feedback."
+            activeTab="stagevoorstellen"
+        >
+        <div className="card mb-4">
+            <div className="card-body">
             <div className="d-flex justify-content-between align-items-start gap-3 mb-3">
                 <div>
                     <h2>{isEditMode ? 'Stagevoorstel aanpassen' : 'Nieuw stagevoorstel indienen'}</h2>
@@ -139,7 +165,7 @@ export default function StageNieuw() {
                             : 'Vul alle verplichte velden in om je stagevoorstel in te dienen.'}
                     </p>
                 </div>
-                <button type="button" className="btn btn-secondary" onClick={() => navigate('/student/stages')}>
+                <button type="button" className="btn btn-secondary" onClick={() => navigate('/student/stagevoorstellen')}>
                     Terug
                 </button>
             </div>
@@ -248,11 +274,13 @@ export default function StageNieuw() {
                     <button type="submit" className="btn btn-primary">
                         {isEditMode ? 'Opnieuw indienen' : 'Voorstel indienen'}
                     </button>
-                    <button type="button" className="btn btn-secondary" onClick={() => navigate('/student/stages')}>
+                    <button type="button" className="btn btn-secondary" onClick={() => navigate('/student/stagevoorstellen')}>
                         Annuleren
                     </button>
                 </div>
             </form>
+            </div>
         </div>
+        </StudentShell>
     );
 }

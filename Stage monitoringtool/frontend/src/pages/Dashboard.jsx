@@ -2,11 +2,9 @@
 
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import StudentDashboard from './student/StudentDashboard';
 import CommissieDashboard from './commissie/CommissieDashboard';
 import DocentDashboard from './docent/DocentDashboard';
 import MentorDashboard from './mentor/MentorDashboard';
-import AdminDashboard from './admin/AdminDashboard';
 import { useAuth } from '../context/AuthContext';
 
 function Dashboard() {
@@ -80,11 +78,9 @@ function Dashboard() {
                 </div>
             </nav>
 
-            {gebruiker.rol === 'student' && <StudentDashboard data={data} />}
             {gebruiker.rol === 'commissie' && <CommissieDashboard data={data} />}
             {gebruiker.rol === 'docent' && <DocentDashboard data={data} />}
             {gebruiker.rol === 'mentor' && <MentorDashboard data={data} />}
-            {gebruiker.rol === 'admin' && <AdminDashboard data={data} />}
         </div>
     );
 }

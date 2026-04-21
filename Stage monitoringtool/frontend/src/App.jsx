@@ -4,10 +4,14 @@ import { AuthProvider } from './context/AuthContext';
 import ProtectedRoute from './components/ProtectedRoute';
 import AdminUsers from './pages/admin/AdminUsers';
 import AdminCreateUser from './pages/admin/AdminCreateUser';
+import AdminStageHistoriek from './pages/admin/AdminStageHistoriek';
+import AdminStageDetail from './pages/admin/AdminStageDetail';
 import ChangePasswordFirstLogin from './pages/login/ChangePasswordFirstLogin';
 import Dashboard from './pages/Dashboard';
 import StageNieuw from './pages/student/StageNieuw';
-import StageOverzicht from './pages/student/StageOverzicht'
+import StudentStagevoorstellen from './pages/student/StudentStagevoorstellen';
+import StudentLogboeken from './pages/student/StudentLogboeken';
+import StudentEvaluaties from './pages/student/StudentEvaluaties';
 import CommissieOverzicht from './pages/commissie/CommissieOverzicht';
 import StageDetail from './pages/commissie/StageDetail';
 
@@ -51,19 +55,55 @@ export default function App() {
             }
             
           />
+          <Route
+            path="/admin/stages"
+            element={
+              <ProtectedRoute allowedRoles={['admin']}>
+                <AdminStageHistoriek />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin/stages/:id"
+            element={
+              <ProtectedRoute allowedRoles={['admin']}>
+                <AdminStageDetail />
+              </ProtectedRoute>
+            }
+          />
 
           <Route path="/dashboard" element={
-    <ProtectedRoute allowedRoles={['student', 'commissie', 'docent', 'mentor']}>
+    <ProtectedRoute allowedRoles={['commissie', 'docent', 'mentor']}>
         <Dashboard />
     </ProtectedRoute>
 } />
 <Route
-            path="/student/stages"
+            path="/student/stagevoorstellen"
             element={
               <ProtectedRoute allowedRoles={['student']}>
-                <StageOverzicht />
+                <StudentStagevoorstellen />
               </ProtectedRoute>
             }
+          />
+          <Route
+            path="/student/logboeken"
+            element={
+              <ProtectedRoute allowedRoles={['student']}>
+                <StudentLogboeken />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/student/evaluaties"
+            element={
+              <ProtectedRoute allowedRoles={['student']}>
+                <StudentEvaluaties />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/student/stages"
+            element={<Navigate to="/student/stagevoorstellen" replace />}
           />
           <Route
             path="/student/stages/nieuw"
@@ -86,7 +126,7 @@ export default function App() {
 <Route
             path="/commissie/stages"
             element={
-              <ProtectedRoute allowedRoles={['commissie', 'admin']}>
+              <ProtectedRoute allowedRoles={['commissie']}>
               <CommissieOverzicht />
               </ProtectedRoute>
             }
@@ -96,7 +136,7 @@ export default function App() {
   <Route
             path="/commissie/stages/:id"
             element={
-              <ProtectedRoute allowedRoles={['commissie', 'admin']}>
+              <ProtectedRoute allowedRoles={['commissie']}>
                 <StageDetail />
             </ProtectedRoute>
          }
