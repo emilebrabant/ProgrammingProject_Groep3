@@ -5,7 +5,25 @@ import fs from 'fs/promises';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
-import { createStage, getActiefVoorstelVanStudent, getStagesVanStudent, getAlleStages, getDocenten, addHistoriek, getStageById, getStageHistoriek, updateStageStatus, updateStageVoorstel, getOvereenkomstByStageId, upsertOvereenkomst, updateOvereenkomstValidatie } from '../models/Stage.js';
+import {
+    createStage,
+    getActiefVoorstelVanStudent,
+    getStagesVanStudent,
+    getAlleStages,
+    getDocenten,
+    addHistoriek,
+    getStageById,
+    getStageHistoriek,
+    updateStageStatus,
+    updateStageVoorstel,
+    getOvereenkomstByStageId,
+    upsertOvereenkomst,
+    updateOvereenkomstValidatie,
+    getLogboekenVanStudent,
+    getGevalideerdeStageVanStudent,
+    getLogboekVoorStageEnWeek,
+    createLogboek,
+} from '../models/Stage.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -401,6 +419,78 @@ export const valideerOvereenkomst = async (req, res) => {
                 : 'Overeenkomst werd afgekeurd',
             stage: geupdateStage,
             overeenkomstStatus: status,
+        });
+    } catch (err) {
+        console.error(err);
+        return res.status(500).json({ error: 'Serverfout' });
+    }
+};
+
+export const getMijnLogboeken = async (req, res) => {
+    if (req.session.user.rol !== 'student') {
+        return res.status(403).json({ error: 'Geen toegang' });
+    }
+
+    try {
+        const logboeken = await getLogboekenVanStudent(req.session.user.id);
+        return res.json({ logboeken });
+    } catch (err) {
+        console.error(err);
+        return res.status(500).json({ error: 'Serverfout' });
+    }
+};
+
+export const maakLogboek = async (req, res) => {
+    if (req.session.user.rol !== 'student') {
+        return res.status(403).json({ error: 'Geen toegang' });
+    }
+
+    const weeknummer = Number(req.body.weeknummer);
+    const taken = typeof req.body.taken === 'string' ? req.body.taken.trim() : '';
+    const reflectie = typeof req.body.reflectie === 'string' ? req.body.reflectie.trim() : '';
+    const leerpunten = typeof req.body.leerpunten === 'string' ? req.body.leerpunten.trim() : '';
+
+    if (!Number.isInteger(weeknummer) || weeknummer < 1 || weeknummer > 53) {
+        return res.status(400).json({ error: 'Weeknummer moet een geheel getal zijn tussen 1 en 53' });
+    }
+
+    if (!taken || !reflectie) {
+        return res.status(400).json({ error: 'Taken en reflectie zijn verplicht' });
+    }
+
+    try {
+        const stage = await getGevalideerdeStageVanStudent(req.session.user.id);
+        if (!stage) {
+            return res.status(400).json({
+                error: 'Je kan pas logboeken invullen wanneer je stageovereenkomst gevalideerd is.',
+            });
+        }
+
+        const bestaandLogboek = await getLogboekVoorStageEnWeek(stage.id, weeknummer);
+        if (bestaandLogboek) {
+            return res.status(409).json({
+                error: `Voor week ${weeknummer} bestaat al een logboek.`,
+            });
+        }
+
+        const logboekId = await createLogboek({
+            stage_id: stage.id,
+            weeknummer,
+            taken,
+            reflectie,
+            leerpunten,
+        });
+
+        return res.status(201).json({
+            message: 'Logboek opgeslagen',
+            logboek: {
+                id: logboekId,
+                stage_id: stage.id,
+                weeknummer,
+                taken,
+                reflectie,
+                leerpunten,
+            },
         });
     } catch (err) {
         console.error(err);

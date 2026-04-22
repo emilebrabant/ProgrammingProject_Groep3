@@ -2,7 +2,21 @@
 import express from 'express';
 import multer from 'multer';
 import { isAuthenticated } from '../middleware/authMiddleware.js';
-import { indienen, getMijnStages, getAlle, getDocentenLijst, getEen, getHistoriek, verwerkBeslissing, updateMijnStage, uploadOvereenkomst, downloadOvereenkomst, valideerOvereenkomst } from '../controllers/stageController.js';
+import {
+    indienen,
+    getMijnStages,
+    getAlle,
+    getDocentenLijst,
+    getEen,
+    getHistoriek,
+    verwerkBeslissing,
+    updateMijnStage,
+    uploadOvereenkomst,
+    downloadOvereenkomst,
+    valideerOvereenkomst,
+    getMijnLogboeken,
+    maakLogboek,
+} from '../controllers/stageController.js';
 
 
     const router = express.Router();
@@ -39,8 +53,10 @@ const handlePdfUpload = (req, res, next) => {
 
 router.get('/docenten', isAuthenticated, getDocentenLijst);
 router.get('/mijn', isAuthenticated, getMijnStages);
+router.get('/logboeken/mijn', isAuthenticated, getMijnLogboeken);
 router.get('/', isAuthenticated, getAlle);
 router.post('/', isAuthenticated, indienen);
+router.post('/logboeken', isAuthenticated, maakLogboek);
 router.patch('/:id', isAuthenticated, updateMijnStage);
 router.post('/:id/overeenkomst', isAuthenticated, handlePdfUpload, uploadOvereenkomst);
 router.get('/:id/overeenkomst', isAuthenticated, downloadOvereenkomst);
