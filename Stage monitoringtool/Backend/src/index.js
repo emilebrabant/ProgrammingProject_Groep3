@@ -6,6 +6,7 @@ import pool from './config/db.js';
 import authRoutes from './routes/authRoutes.js';
 import userRoutes from './routes/userRoutes.js';
 import stageRoutes from './routes/stageRoutes.js';
+import competentieRoutes from './routes/competentieRoutes.js';
 
 dotenv.config();
 
@@ -33,6 +34,7 @@ app.use(session({
 app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/stages', stageRoutes);
+app.use('/api/competenties', competentieRoutes);
 
 // Test routes
 app.get('/', (req, res) => {
