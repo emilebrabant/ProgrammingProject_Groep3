@@ -271,3 +271,60 @@ export const createLogboek = async ({ stage_id, weeknummer, taken, reflectie, le
 
     return result.insertId;
 };
+
+
+//logboeken ophalen van studenten die aan bepaaldementor gekoppeld zijn
+export const getLogboekenVanMentor = async (mentor_naam) => {
+    const [rows] = await pool.query(
+        `SELECT l.id,
+                l.stage_id,
+                l.weeknummer,
+                l.taken,
+                l.reflectie,
+                l.leerpunten,
+                l.mentor_commentaar,
+                l.afgetekend_door,
+                l.afgetekend_op,
+                l.aangemaakt_op,
+                u.naam AS student_naam,
+                u.email AS student_email,
+                s.bedrijf_naam
+         FROM logboeken l
+         INNER JOIN stages s ON s.id = l.stage_id
+         INNER JOIN users u ON u.id = s.student_id
+         WHERE s.contactpersoon = ?
+         ORDER BY u.naam ASC, l.weeknummer ASC`,
+        [mentor_naam]
+    );
+    return rows;
+};
+
+//1 logboek ophalen op ID
+export const getLogboekById = async (id) => {
+    const [rows] = await pool.query(
+        `SELECT l.*,
+                s.contactpersoon,
+                u.naam AS student_naam
+         FROM logboeken l
+         INNER JOIN stages s ON s.id = l.stage_id
+         INNER JOIN users u ON u.id = s.student_id
+         WHERE l.id = ?`,
+        [id]
+    );
+    return rows[0] || null;
+};
+
+//Logboek aftekenen door mentor en commentaar
+export const aftekenenLogboek = async (logboek_id, mentor_id, mentor_commentaar) => {
+    await pool.query(
+        `UPDATE logboeken
+         SET afgetekend_door   = ?,
+             afgetekend_op     = NOW(),
+             mentor_commentaar = ?
+         WHERE id = ?`,
+        [mentor_id, mentor_commentaar || null, logboek_id]
+    );
+};
+
+
+

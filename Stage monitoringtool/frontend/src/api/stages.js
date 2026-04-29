@@ -65,3 +65,19 @@ export const valideerStageOvereenkomst = async (id, data) => {
     const response = await axiosInstance.patch(`/stages/${id}/overeenkomst/validatie`, data);
     return response.data;
 };
+
+
+//logboeken ophalen als mentor
+export const getMentorLogboeken = async () => {
+    const response = await axiosInstance.get('/stages/logboeken/mentor');
+    return response.data;
+};
+
+// Logboek aftekenen als mentor met commentaar
+export const aftekenenLogboek = async (logboekId, commentaar = '') => {
+    const response = await axiosInstance.patch(
+        `/stages/logboeken/${logboekId}/aftekenen`,
+        { commentaar }
+    );
+    return response.data;
+};

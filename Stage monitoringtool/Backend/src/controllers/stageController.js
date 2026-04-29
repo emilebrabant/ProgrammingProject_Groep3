@@ -23,6 +23,9 @@ import {
     getGevalideerdeStageVanStudent,
     getLogboekVoorStageEnWeek,
     createLogboek,
+    getLogboekenVanMentor,
+    getLogboekById,
+    aftekenenLogboek,
 } from '../models/Stage.js';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -493,6 +496,58 @@ export const maakLogboek = async (req, res) => {
             },
         });
     } catch (err) {
+        console.error(err);
+        return res.status(500).json({ error: 'Serverfout' });
+    }
+};
+
+
+//Mentor ziet alle logboeken van zijn gekoppelde studenten
+export const getMentorLogboeken = async (req, res) => {
+    if (req.session.user.rol !== 'mentor') {
+        return res.status(403).json({ error: 'Geen toegang' });
+    }
+
+    try {
+        const logboeken = await getLogboekenVanMentor(req.session.user.naam);
+        return res.json({ logboeken });
+    } catch (err) {
+        console.error(err);
+        return res.status(500).json({ error: 'Serverfout' });
+    }
+};
+
+//mentor tekent een logboek af met commentaar (optioneel)
+export const aftekenenLogboekController = async (req, res) => {
+    if (req.session.user.rol !== 'mentor') {
+        return res.status(403).json({ error: 'Geen toegang' });
+    }
+
+    const commentaar = typeof req.body.commentaar === 'string'
+        ? req.body.commentaar.trim()
+        : '';
+
+    try {
+        const logboek = await getLogboekById(req.params.id);
+
+        if (!logboek) {
+            return res.status(404).json({ error: 'Logboek niet gevonden' });
+        }
+
+ //onctroleer of dit logboek van een student van deze mentor is
+        if (logboek.contactpersoon !== req.session.user.naam) {
+            return res.status(403).json({ error: 'Geen toegang tot dit logboek' });
+}
+
+   // Logboek mag maar 1 keer afgetekend worden
+        if (logboek.afgetekend_door) {
+            return res.status(400).json({ error: 'Dit logboek is al afgetekend' });
+        }
+
+        await aftekenenLogboek(req.params.id, req.session.user.id, commentaar);
+
+        return res.json({ message: 'Logboek succesvol afgetekend' });
+  } catch (err) {
         console.error(err);
         return res.status(500).json({ error: 'Serverfout' });
     }

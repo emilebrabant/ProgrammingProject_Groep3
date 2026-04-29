@@ -16,6 +16,8 @@ import {
     valideerOvereenkomst,
     getMijnLogboeken,
     maakLogboek,
+    getMentorLogboeken,
+    aftekenenLogboekController,
 } from '../controllers/stageController.js';
 
 
@@ -62,6 +64,8 @@ router.post('/:id/overeenkomst', isAuthenticated, handlePdfUpload, uploadOvereen
 router.get('/:id/overeenkomst', isAuthenticated, downloadOvereenkomst);
 router.patch('/:id/overeenkomst/validatie', isAuthenticated, valideerOvereenkomst);
 router.get('/:id/historiek', isAuthenticated, getHistoriek);
+router.get('/logboeken/mentor', isAuthenticated, getMentorLogboeken);
+router.patch('/logboeken/:id/aftekenen', isAuthenticated, aftekenenLogboekController);
 router.get('/:id', isAuthenticated, getEen);
 router.patch('/:id/beslissing', isAuthenticated, verwerkBeslissing);
 
