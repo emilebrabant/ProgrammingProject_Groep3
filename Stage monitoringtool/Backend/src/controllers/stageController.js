@@ -26,6 +26,11 @@ import {
     getLogboekenVanMentor,
     getLogboekById,
     aftekenenLogboek,
+    getLogboekenVanDocent,
+    addDocentFeedback,
+    getFeedbackVanLogboek,
+    
+   
 } from '../models/Stage.js';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -548,6 +553,88 @@ export const aftekenenLogboekController = async (req, res) => {
 
         return res.json({ message: 'Logboek succesvol afgetekend' });
   } catch (err) {
+        console.error(err);
+        return res.status(500).json({ error: 'Serverfout' });
+    }
+};
+
+// docent ziet alle logboeken van zij gekoppelde studenten
+export const getDocentLogboeken = async (req, res) => {
+    if (req.session.user.rol !== 'docent') {
+        return res.status(403).json({ error: 'Geen toegang' });
+    }
+
+    try {
+         const logboeken = await getLogboekenVanDocent(req.session.user.id);
+        return res.json({ logboeken });
+    } catch (err) {
+        console.error(err);
+        return res.status(500).json({ error: 'Serverfout' });
+    }
+};
+
+//docent voegt feedback toe aan een logboek
+export const voegDocentFeedbackToe = async (req, res) => {
+    if (req.session.user.rol !== 'docent') {
+        return res.status(403).json({ error: 'Geen toegang' });
+    }
+
+    const tekst = typeof req.body.tekst === 'string' ? req.body.tekst.trim() : '';
+
+    if (!tekst) {
+        return res.status(400).json({ error: 'Feedback mag niet leeg zijn' });
+    }
+
+    try {
+        const logboek = await getLogboekById(req.params.id);
+
+        if (!logboek) {
+            return res.status(404).json({ error: 'Logboek niet gevonden' });
+        }
+
+// controleer of dit logboek van student van deze docent is
+        const logboeken = await getLogboekenVanDocent(req.session.user.id);
+        const heeftToegang = logboeken.some((l) => l.id === Number(req.params.id));
+
+        if (!heeftToegang) {
+            return res.status(403).json({ error: 'Geen toegang tot dit logboek' });
+        }
+
+        await addDocentFeedback(req.params.id, req.session.user.id, tekst);
+
+        const feedback = await getFeedbackVanLogboek(req.params.id);
+        return res.status(201).json({ message: 'Feedback toegevoegd', feedback });
+        } catch (err) {
+        console.error(err);
+        return res.status(500).json({ error: 'Serverfout' });
+ }
+};
+
+
+// Student ziet feedback op zijn logboek
+export const getLogboekFeedback = async (req, res) => {
+    if (req.session.user.rol !== 'student') {
+        return res.status(403).json({ error: 'Geen toegang' });
+    }
+
+    try {
+        const logboek = await getLogboekById(req.params.id);
+
+        if (!logboek) {
+            return res.status(404).json({ error: 'Logboek niet gevonden' });
+        }
+
+//controleer of dit logboek van de ingelogde student is
+        const logboeken = await getLogboekenVanStudent(req.session.user.id);
+        const heeftToegang = logboeken.some((l) => l.id === Number(req.params.id));
+
+        if (!heeftToegang) {
+            return res.status(403).json({ error: 'Geen toegang tot dit logboek' });
+        }
+
+        const feedback = await getFeedbackVanLogboek(req.params.id);
+        return res.json({ feedback });
+    } catch (err) {
         console.error(err);
         return res.status(500).json({ error: 'Serverfout' });
     }

@@ -18,6 +18,9 @@ import {
     maakLogboek,
     getMentorLogboeken,
     aftekenenLogboekController,
+    getDocentLogboeken,
+    voegDocentFeedbackToe,
+    getLogboekFeedback,
 } from '../controllers/stageController.js';
 
 
@@ -65,7 +68,10 @@ router.get('/:id/overeenkomst', isAuthenticated, downloadOvereenkomst);
 router.patch('/:id/overeenkomst/validatie', isAuthenticated, valideerOvereenkomst);
 router.get('/:id/historiek', isAuthenticated, getHistoriek);
 router.get('/logboeken/mentor', isAuthenticated, getMentorLogboeken);
+router.get('/logboeken/docent', isAuthenticated, getDocentLogboeken);
+router.post('/logboeken/:id/feedback', isAuthenticated, voegDocentFeedbackToe);
 router.patch('/logboeken/:id/aftekenen', isAuthenticated, aftekenenLogboekController);
+router.get('/logboeken/:id/feedback', isAuthenticated, getLogboekFeedback);
 router.get('/:id', isAuthenticated, getEen);
 router.patch('/:id/beslissing', isAuthenticated, verwerkBeslissing);
 

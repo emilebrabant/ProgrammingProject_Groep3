@@ -81,3 +81,19 @@ export const aftekenenLogboek = async (logboekId, commentaar = '') => {
     );
     return response.data;
 };
+
+
+// logboeken ophalen als docent
+export const getDocentLogboeken = async () => {
+    const response = await axiosInstance.get('/stages/logboeken/docent');
+    return response.data;
+};
+
+//fedback toevoegen aan een logboek als docent
+export const voegFeedbackToe = async (logboekId, tekst) => {
+    const response = await axiosInstance.post(
+        `/stages/logboeken/${logboekId}/feedback`,
+        { tekst }
+    );
+    return response.data;
+};

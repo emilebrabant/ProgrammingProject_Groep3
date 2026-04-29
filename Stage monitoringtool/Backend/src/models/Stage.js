@@ -327,4 +327,59 @@ export const aftekenenLogboek = async (logboek_id, mentor_id, mentor_commentaar)
 };
 
 
+//logboeken ophalen van studenten gekoppeld aadocent
+export const getLogboekenVanDocent = async (docent_id) => {
+    const [rows] = await pool.query(
+        `SELECT l.id,
+                l.stage_id,
+                l.weeknummer,
+                l.taken,
+                l.reflectie,
+                l.leerpunten,
+                l.afgetekend_door,
+                l.afgetekend_op,
+                l.mentor_commentaar,
+                l.aangemaakt_op,
+                u.naam AS student_naam,
+                u.email AS student_email,
+                s.bedrijf_naam
+         FROM logboeken l
+         INNER JOIN stages s ON s.id = l.stage_id
+         INNER JOIN users u ON u.id = s.student_id
+         WHERE s.docent_id = ?
+         ORDER BY u.naam ASC, l.weeknummer ASC`,
+        [docent_id]
+ );
+    return rows;
+};
+
+//docent feedback toevoege
+export const addDocentFeedback = async (logboek_id, user_id, tekst) => {
+    const [result] = await pool.query(
+        `INSERT INTO logboek_feedback (logboek_id, user_id, tekst, aangemaakt_op)
+         VALUES (?, ?, ?, NOW())`,
+        [logboek_id, user_id, tekst]
+    );
+    return result.insertId;
+};
+
+//feedback ophalen van logboek
+export const getFeedbackVanLogboek = async (logboek_id) => {
+    const [rows] = await pool.query(
+        `SELECT lf.id,
+                lf.logboek_id,
+                lf.tekst,
+                lf.aangemaakt_op,
+                u.naam AS auteur_naam,
+                u.rol AS auteur_rol
+         FROM logboek_feedback lf
+         INNER JOIN users u ON u.id = lf.user_id
+         WHERE lf.logboek_id = ?
+         ORDER BY lf.aangemaakt_op ASC`,
+        [logboek_id]
+    );
+return rows;
+};
+
+
 

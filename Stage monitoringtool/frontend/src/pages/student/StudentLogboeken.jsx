@@ -1,8 +1,10 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { createStudentLogboek, getStudentLogboeken } from '../../api/student.js';
+import { createStudentLogboek, getStudentLogboeken, getLogboekFeedback } from '../../api/student.js';
 import { useAuth } from '../../context/AuthContext';
 import StudentShell from './StudentShell';
+
+
 
 export default function StudentLogboeken() {
   const navigate = useNavigate();
@@ -13,6 +15,7 @@ export default function StudentLogboeken() {
   const [submitLoading, setSubmitLoading] = useState(false);
   const [submitError, setSubmitError] = useState('');
   const [submitSuccess, setSubmitSuccess] = useState('');
+  const [feedbackPerLogboek, setFeedbackPerLogboek] = useState({});
   const [form, setForm] = useState({
     weeknummer: '',
     taken: '',
@@ -22,10 +25,27 @@ export default function StudentLogboeken() {
 
   useEffect(() => {
     getStudentLogboeken()
-      .then((data) => setLogboeken(data.logboeken || []))
+      .then(async (data) => {
+        const logboeken = data.logboeken || [];
+        setLogboeken(logboeken);
+        const feedbackMap = {};
+        await Promise.all(
+          logboeken.map(async (l) => {
+            try {
+              const result = await getLogboekFeedback(l.id);
+              feedbackMap[l.id] = result.feedback || [];
+           } catch {
+              feedbackMap[l.id] = [];
+            }
+          })
+        );
+        setFeedbackPerLogboek(feedbackMap);
+    })
       .catch(() => setError('Kon logboeken niet laden'))
       .finally(() => setLoading(false));
   }, []);
+
+
 
   const gesorteerd = useMemo(() => {
     return [...logboeken].sort((a, b) => {
@@ -196,6 +216,21 @@ export default function StudentLogboeken() {
                     <div className="small text-muted fw-semibold">Leerpunten / problemen</div>
                     <div style={{ whiteSpace: 'pre-wrap' }}>{logboek.leerpunten || '-'}</div>
                   </div>
+                  {feedbackPerLogboek[logboek.id]?.length > 0 && (
+                    <div className="mt-2 p-2 bg-light rounded">
+                      <div className="small text-muted fw-semibold mb-1">
+                        Feedback van docent
+                      </div>
+                      {feedbackPerLogboek[logboek.id].map((fb) => (
+                        <div key={fb.id} className="mb-1 small">
+                          <span className="text-muted">
+                            {new Date(fb.aangemaakt_op).toLocaleDateString('nl-BE')}:
+                          </span>{' '}
+                          {fb.tekst}
+                        </div>
+                      ))}
+                    </div>
+                  )}
                 </li>
               ))}
             </ul>

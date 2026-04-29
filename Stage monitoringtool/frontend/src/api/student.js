@@ -14,3 +14,9 @@ export const createStudentLogboek = async (payload) => {
   const response = await axiosInstance.post('/stages/logboeken', payload);
   return response.data;
 };
+
+
+export const getLogboekFeedback = async (logboekId) => {
+    const response = await axiosInstance.get(`/stages/logboeken/${logboekId}/feedback`);
+    return response.data;
+};
