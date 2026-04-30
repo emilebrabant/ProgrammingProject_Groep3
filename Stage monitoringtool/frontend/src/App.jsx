@@ -6,6 +6,7 @@ import AdminUsers from './pages/admin/AdminUsers';
 import AdminCreateUser from './pages/admin/AdminCreateUser';
 import AdminStageHistoriek from './pages/admin/AdminStageHistoriek';
 import AdminStageDetail from './pages/admin/AdminStageDetail';
+import AdminCompetencies from './pages/admin/AdminCompetencies';
 import ChangePasswordFirstLogin from './pages/login/ChangePasswordFirstLogin';
 import StageNieuw from './pages/student/StageNieuw';
 import StudentStagevoorstellen from './pages/student/StudentStagevoorstellen';
@@ -74,6 +75,16 @@ export default function App() {
               </ProtectedRoute>
             }
           />
+
+          <Route
+            path="/admin/competenties"
+            element={
+              <ProtectedRoute allowedRoles={['admin']}>
+                <AdminCompetencies />
+              </ProtectedRoute>
+            }
+          />
+          
 
           <Route path="/dashboard" element={<Navigate to="/docent/studenten" replace />} />
           <Route

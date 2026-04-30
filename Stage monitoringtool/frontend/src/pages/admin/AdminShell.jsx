@@ -36,6 +36,10 @@ function AdminShell({ user, onLogout, title, subtitle, activeTab, children }) {
           <Link className={activeTab === 'stages' ? 'btn btn-primary' : 'btn btn-outline-primary'} to="/admin/stages">
             Stagehistoriek
           </Link>
+
+          <Link className={tabClass('competenties')} to="/admin/competenties">
+            Competenties
+          </Link>
         </div>
 
         {children}
