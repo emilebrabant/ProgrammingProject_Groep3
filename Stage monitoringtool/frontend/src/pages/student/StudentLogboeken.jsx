@@ -216,6 +216,14 @@ export default function StudentLogboeken() {
                     <div className="small text-muted fw-semibold">Leerpunten / problemen</div>
                     <div style={{ whiteSpace: 'pre-wrap' }}>{logboek.leerpunten || '-'}</div>
                   </div>
+                  {logboek.mentor_commentaar && (
+                    <div className="mt-2 p-2 border rounded bg-light">
+                      <div className="small text-muted fw-semibold mb-1">
+                        Feedback van mentor
+                      </div>
+                      <div style={{ whiteSpace: 'pre-wrap' }}>{logboek.mentor_commentaar}</div>
+                    </div>
+                  )}
                   {feedbackPerLogboek[logboek.id]?.length > 0 && (
                     <div className="mt-2 p-2 bg-light rounded">
                       <div className="small text-muted fw-semibold mb-1">
