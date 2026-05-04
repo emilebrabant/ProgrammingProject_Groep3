@@ -7,6 +7,7 @@ import authRoutes from './routes/authRoutes.js';
 import userRoutes from './routes/userRoutes.js';
 import stageRoutes from './routes/stageRoutes.js';
 import competentieRoutes from './routes/competentieRoutes.js';
+import evaluatieRoutes from './routes/evaluatieRoutes.js';
 
 dotenv.config();
 
@@ -35,6 +36,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/stages', stageRoutes);
 app.use('/api/competenties', competentieRoutes);
+app.use('/api/evaluaties', evaluatieRoutes);
 
 // Test routes
 app.get('/', (req, res) => {
