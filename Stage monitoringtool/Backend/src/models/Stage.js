@@ -222,6 +222,7 @@ export const getLogboekenVanStudent = async (student_id) => {
                 l.taken,
                 l.reflectie,
                 l.leerpunten,
+                l.mentor_commentaar,
                 l.afgetekend_door,
                 l.afgetekend_op,
                 l.aangemaakt_op
