@@ -13,4 +13,4 @@ export const slaZelfevaluatieOp = async (competentie_id, student_beschrijving) =
         student_beschrijving,
     });
     return response.data;
-};
+}; 

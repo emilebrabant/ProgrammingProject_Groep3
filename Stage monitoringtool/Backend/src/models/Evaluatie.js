@@ -65,3 +65,43 @@ export const upsertStudentBeschrijving = async (evaluatie_id, competentie_id, st
         [evaluatie_id, competentie_id, student_beschrijving]
     );
 }; 
+
+
+//evaluatie ophalen van een student via mentor
+export const getEvaluatieVanMentor = async (mentor_naam) => {
+    const [rows] = await pool.query(
+        `SELECT e.id,
+                e.stage_id,
+                e.vergrendeld,
+                u.naam AS student_naam,
+                u.email AS student_email
+         FROM evaluaties e
+         INNER JOIN stages s ON s.id = e.stage_id
+         INNER JOIN users u ON u.id = s.student_id
+         WHERE s.contactpersoon = ?`,
+        [mentor_naam]
+    );
+    return rows;
+};
+
+// Mentor score en feedback opslaan
+export const upsertMentorScore = async (evaluatie_id, competentie_id, mentor_score, mentor_feedback) => {
+    await pool.query(
+        `INSERT INTO competentie_scores (evaluatie_id, competentie_id, mentor_score, mentor_feedback)
+         VALUES (?, ?, ?, ?)
+         ON DUPLICATE KEY UPDATE
+             mentor_score    = VALUES(mentor_score),
+             mentor_feedback = VALUES(mentor_feedback)`,
+        [evaluatie_id, competentie_id, mentor_score, mentor_feedback || null]
+    );
+};
+
+//mentor dient in
+export const vergrendelEvaluatie = async (evaluatie_id) => {
+    await pool.query( 
+        `UPDATE evaluaties
+         SET vergrendeld = 1
+         WHERE id = ?`,
+        [evaluatie_id]
+    );
+};
