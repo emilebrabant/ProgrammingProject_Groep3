@@ -16,6 +16,7 @@ import CommissieOverzicht from './pages/commissie/CommissieOverzicht';
 import StageDetail from './pages/commissie/StageDetail';
 import MentorKoppelingStudenten from './pages/mentor/MentorKoppelingStudenten';
 import MentorLogboeken from './pages/mentor/MentorLogboeken';
+import MentorEvaluaties from './pages/mentor/MentorEvaluaties';
 import DocentStudenten from './pages/docent/DocentStudenten';
 import DocentLogboeken from './pages/docent/DocentLogboeken';
 
@@ -119,6 +120,15 @@ export default function App() {
               </ProtectedRoute>
             }
           />
+
+          <Route
+            path="/mentor/evaluatie"
+            element={
+              <ProtectedRoute allowedRoles={['mentor']}>
+                <MentorEvaluaties />
+              </ProtectedRoute>
+            }
+          />  
 <Route
             path="/student/stagevoorstellen"
             element={

@@ -41,6 +41,9 @@ function MentorShell({ title, subtitle, activeTab, children }) {
           <Link className={tabClass('koppeling-studenten')} to="/mentor/koppeling-studenten">
             Koppeling studenten
           </Link>
+          <Link className={tabClass('evaluatie')} to="/mentor/evaluatie">
+            Evaluatie
+          </Link>
         </div>
 
         {children}
