@@ -62,6 +62,7 @@ CREATE TABLE logboeken (
   taken TEXT NOT NULL,
   reflectie TEXT NOT NULL,
   leerpunten TEXT,
+  mentor_commentaar TEXT,
   afgetekend_door INT,
   afgetekend_op TIMESTAMP,
   aangemaakt_op TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
