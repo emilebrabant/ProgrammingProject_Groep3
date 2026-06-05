@@ -3,6 +3,7 @@ import { changePasswordFirstLogin, login, logout, me } from '../controllers/auth
 
 const router = express.Router();
 
+//api routes koppelen aan route
 router.post('/login', login);
 router.post('/logout', logout);
 router.get('/me', me);

@@ -1,6 +1,8 @@
+//imports
 import bcrypt from 'bcrypt';
 import pool from '../config/db.js';
 
+//login functie
 export const login = async (req, res) => {
   const { email, wachtwoord } = req.body;
 
@@ -48,10 +50,12 @@ export const login = async (req, res) => {
   }
 };
 
+//uitlog functie
 export const logout = (req, res) => {
   req.session.destroy();
   res.json({ message: 'Uitgelogd' });
 };
+
 
 export const me = (req, res) => {
   if (!req.session.user) {
@@ -61,6 +65,7 @@ export const me = (req, res) => {
   return res.json({ user: req.session.user });
 };
 
+//wachtwoord aanpassen op eerste login functie
 export const changePasswordFirstLogin = async (req, res) => {
   if (!req.session.user) {
     return res.status(401).json({ error: 'Niet ingelogd' });
@@ -99,6 +104,7 @@ export const changePasswordFirstLogin = async (req, res) => {
       return res.status(400).json({ error: 'Nieuw wachtwoord moet verschillen van je huidige wachtwoord' });
     }
 
+    //wachtwoord wordt crypted opgeslagen
     const newPasswordHash = await bcrypt.hash(nieuwWachtwoord, 10);
 
     await pool.query(

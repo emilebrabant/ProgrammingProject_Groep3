@@ -10,6 +10,7 @@ import {
 
 const router = express.Router();
 
+//api route kopellen aan route
 router.get('/', isAuthenticated, getAlle);
 router.post('/', isAuthenticated, maakAan);
 router.patch('/:id', isAuthenticated, update);

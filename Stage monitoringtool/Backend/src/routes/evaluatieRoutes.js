@@ -12,7 +12,7 @@ import {
 
 
 const router = express.Router();
-
+//api functies koppelen aan route
 router.get('/student', isAuthenticated, getStudentEvaluatie);
 router.post('/student/zelfevaluatie', isAuthenticated, slaZelfevaluatieOp);
 router.get('/mentor', isAuthenticated, getMentorEvaluatie);

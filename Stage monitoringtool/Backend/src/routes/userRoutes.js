@@ -4,6 +4,7 @@ import { heeftRol } from '../middleware/roleMiddleware.js';
 
 const router = express.Router();
 
+//api functies koppelen aan route
 router.get('/', heeftRol(['admin']), getUsers);
 router.post('/', heeftRol(['admin']), createUser);
 router.patch('/:id', heeftRol(['admin']), updateUser);

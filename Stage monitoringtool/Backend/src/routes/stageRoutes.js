@@ -56,6 +56,7 @@ const handlePdfUpload = (req, res, next) => {
     });
 };
 
+//api route koppelen aan route
 router.get('/docenten', isAuthenticated, getDocentenLijst);
 router.get('/mijn', isAuthenticated, getMijnStages);
 router.get('/logboeken/mijn', isAuthenticated, getMijnLogboeken);

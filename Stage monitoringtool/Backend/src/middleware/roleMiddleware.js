@@ -1,6 +1,5 @@
 
 // Controleren of de ingelogde gebruiker de juiste rol heeft
-
 export function heeftRol(toegestaneRollen) {
     return function (req, res, next) {
         if (!req.session.user) {

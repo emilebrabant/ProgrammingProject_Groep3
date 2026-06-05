@@ -160,7 +160,7 @@ export const slaMentorScoreOp = async (req, res) => {
     }
 };
 
-//mentor dient evaluatie i
+//mentor dient evaluatie in
 export const dientEvaluatieIn = async (req, res) => {
     if (req.session.user.rol !== 'mentor') {
         return res.status(403).json({ error: 'Geen toegang' });

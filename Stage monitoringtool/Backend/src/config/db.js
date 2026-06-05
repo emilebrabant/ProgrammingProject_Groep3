@@ -1,5 +1,4 @@
 // Verbinding met de MySQL database van prof --> het leest de gegevens uit .env en maakt pool aan (permanente verbinding)
-
 import mysql from 'mysql2/promise';
 import dotenv from 'dotenv';
 

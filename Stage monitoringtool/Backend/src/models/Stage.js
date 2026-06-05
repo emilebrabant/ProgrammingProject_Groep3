@@ -109,6 +109,7 @@ export const getStageById = async (id) => {
     return rows[0] || null;
 };
 
+//overeenkomst ophalen voor id
 export const getOvereenkomstByStageId = async (stage_id) => {
     const [rows] = await pool.query(
         `SELECT id, stage_id, bestand_pad, status, gevalideerd_door, gevalideerd_op
@@ -120,6 +121,7 @@ export const getOvereenkomstByStageId = async (stage_id) => {
     return rows[0] || null;
 };
 
+//overeenkomst uploaden voor stage id
 export const upsertOvereenkomst = async ({ stage_id, bestand_pad }) => {
     await pool.query(
         `INSERT INTO overeenkomsten (stage_id, bestand_pad, status)
@@ -133,6 +135,7 @@ export const upsertOvereenkomst = async ({ stage_id, bestand_pad }) => {
     );
 };
 
+//status van overeenkomst updaten
 export const updateOvereenkomstValidatie = async ({ stage_id, status, gevalideerd_door }) => {
     await pool.query(
         `UPDATE overeenkomsten
@@ -172,6 +175,7 @@ export const addHistoriek = async ({ stage_id, status, feedback, gewijzigd_door 
     );
 };
 
+//status van stage updaten
 export const updateStageStatus = async ({ stage_id, status }) => {
     await pool.query(
         `UPDATE stages
@@ -181,6 +185,7 @@ export const updateStageStatus = async ({ stage_id, status }) => {
     );
 };
 
+//stagevoorstel aanpassen
 export const updateStageVoorstel = async ({
     stage_id,
     docent_id,
@@ -214,6 +219,7 @@ export const getDocenten = async () => {
     return rows;
 };
 
+//get logboeken van een bepaalde student
 export const getLogboekenVanStudent = async (student_id) => {
     const [rows] = await pool.query(
         `SELECT l.id,
@@ -236,6 +242,7 @@ export const getLogboekenVanStudent = async (student_id) => {
     return rows;
 };
 
+//get stage (status = gevalideerd) van een bepaalde student
 export const getGevalideerdeStageVanStudent = async (student_id) => {
     const [rows] = await pool.query(
         `SELECT s.id
@@ -251,6 +258,7 @@ export const getGevalideerdeStageVanStudent = async (student_id) => {
     return rows[0] || null;
 };
 
+//get logboek voor een bepaalde week en student
 export const getLogboekVoorStageEnWeek = async (stage_id, weeknummer) => {
     const [rows] = await pool.query(
         `SELECT id
@@ -263,6 +271,7 @@ export const getLogboekVoorStageEnWeek = async (stage_id, weeknummer) => {
     return rows[0] || null;
 };
 
+//post logboek voor een bepaalde student en week
 export const createLogboek = async ({ stage_id, weeknummer, taken, reflectie, leerpunten }) => {
     const [result] = await pool.query(
         `INSERT INTO logboeken (stage_id, weeknummer, taken, reflectie, leerpunten, aangemaakt_op)

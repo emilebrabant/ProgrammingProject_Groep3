@@ -106,7 +106,6 @@ export const getMijnStages = async (req, res) => {
 };
 
 //commissie ziet allevoorstellen
-
 export const getAlle = async (req, res) => {
     if (req.session.user.rol !== 'commissie' && req.session.user.rol !== 'admin') {
         return res.status(403).json({ error: 'Geen toegang' });
@@ -127,12 +126,11 @@ export const getDocentenLijst = async (req, res) => {
     try {
         const docenten = await getDocenten();
         return res.json({ docenten });
- } catch (err) {
+    } catch (err) {
         console.error(err);
         return res.status(500).json({ error: 'Serverfout' });
     }
 };
-
 
 // één stage ophalen op ID (voor StageDetail.jsx)
 export const getEen = async (req, res) => {
@@ -150,6 +148,7 @@ export const getEen = async (req, res) => {
     }
 };
 
+//historiek van één stage ophalen
 export const getHistoriek = async (req, res) => {
     if (req.session.user.rol !== 'commissie' && req.session.user.rol !== 'admin') {
         return res.status(403).json({ error: 'Geen toegang' });
@@ -168,6 +167,7 @@ export const getHistoriek = async (req, res) => {
         return res.status(500).json({ error: 'Serverfout' });
     }
 };
+
 
 export const verwerkBeslissing = async (req, res) => {
     if (req.session.user.rol !== 'commissie' && req.session.user.rol !== 'admin') {
@@ -223,6 +223,7 @@ export const verwerkBeslissing = async (req, res) => {
     }
 };
 
+//aanpassingen maken aan de stage
 export const updateMijnStage = async (req, res) => {
     if (req.session.user.rol !== 'student') {
         return res.status(403).json({ error: 'Geen toegang' });
@@ -274,6 +275,7 @@ export const updateMijnStage = async (req, res) => {
     }
 };
 
+//uploaden van een stage-pdf
 export const uploadOvereenkomst = async (req, res) => {
     if (req.session.user.rol !== 'student') {
         return res.status(403).json({ error: 'Geen toegang' });
@@ -333,6 +335,7 @@ export const uploadOvereenkomst = async (req, res) => {
     }
 };
 
+// pdf downloaden
 export const downloadOvereenkomst = async (req, res) => {
     if (!req.session.user) {
         return res.status(401).json({ error: 'Niet ingelogd' });
@@ -366,6 +369,7 @@ export const downloadOvereenkomst = async (req, res) => {
     }
 };
 
+//goedkeuren van de stageovereenkomst pdf
 export const valideerOvereenkomst = async (req, res) => {
     if (req.session.user.rol !== 'admin') {
         return res.status(403).json({ error: 'Geen toegang' });
@@ -434,6 +438,7 @@ export const valideerOvereenkomst = async (req, res) => {
     }
 };
 
+//inladen van logboeken
 export const getMijnLogboeken = async (req, res) => {
     if (req.session.user.rol !== 'student') {
         return res.status(403).json({ error: 'Geen toegang' });

@@ -3,6 +3,7 @@ import pool from '../config/db.js';
 
 const allowedRoles = ['student', 'commissie', 'docent', 'mentor', 'admin'];
 
+//get all users voor admin portaal
 export const getUsers = async (req, res) => {
   try {
     const [rows] = await pool.query(
@@ -16,6 +17,7 @@ export const getUsers = async (req, res) => {
   }
 };
 
+//maak user voor admin portaal
 export const createUser = async (req, res) => {
   const { naam, email, wachtwoord, rol } = req.body;
 
@@ -57,6 +59,7 @@ export const createUser = async (req, res) => {
   }
 };
 
+//update user voor admin portaal
 export const updateUserRole = async (req, res) => {
   const { id } = req.params;
   const { rol } = req.body;
@@ -83,6 +86,7 @@ export const updateUserRole = async (req, res) => {
   }
 };
 
+//delete user voor admin portaal
 export const deleteUser = async (req, res) => {
   const { id } = req.params;
 
@@ -104,6 +108,7 @@ export const deleteUser = async (req, res) => {
   }
 };
 
+//update volledige user
 export const updateUser = async (req, res) => {
   const { id } = req.params;
   const { naam, rol } = req.body;
