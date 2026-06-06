@@ -1,9 +1,11 @@
+//imports
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import api from '../../api/axios';
 import { useAuth } from '../../context/AuthContext';
 import AdminShell from './AdminShell';
 
+//maken van een leeg formulier
 const initialForm = {
   naam: '',
   email: '',
@@ -11,6 +13,7 @@ const initialForm = {
   rol: 'student'
 };
 
+//admin gebruikers aanmaken functie
 export default function AdminCreateUser() {
   const [form, setForm] = useState(initialForm);
   const [saving, setSaving] = useState(false);
@@ -19,16 +22,19 @@ export default function AdminCreateUser() {
   const navigate = useNavigate();
   const { user, logout } = useAuth();
 
+  //logout
   const handleLogout = async () => {
     await logout();
     navigate('/login', { replace: true });
   };
 
+  //sla changes op in formulier
   const handleChange = (event) => {
     const { name, value } = event.target;
     setForm((currentForm) => ({ ...currentForm, [name]: value }));
   };
 
+  //doorvoeren van de changes
   const handleSubmit = async (event) => {
     event.preventDefault();
     setSaving(true);
@@ -47,6 +53,7 @@ export default function AdminCreateUser() {
     }
   };
 
+  //aanvulling van de shell met gebruiker aanmaken pagina details
   return (
     <AdminShell
       user={user}

@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 
+//algemene stijl voor alle admin paginas
 function AdminShell({ user, onLogout, title, subtitle, activeTab, children }) {
   const tabClass = (tabName) => `btn ${activeTab === tabName ? 'btn-dark' : 'btn-outline-dark'}`;
 

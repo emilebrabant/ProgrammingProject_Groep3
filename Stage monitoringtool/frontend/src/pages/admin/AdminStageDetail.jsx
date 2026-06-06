@@ -1,9 +1,11 @@
+//imports
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { getStageById, getStageHistoriek, getStageOvereenkomstUrl, valideerStageOvereenkomst, verwerkStageBeslissing } from '../../api/stages';
 import { useAuth } from '../../context/AuthContext';
 import AdminShell from './AdminShell';
 
+//kleuren voor de status
 function StatusBadge({ status }) {
   const kleuren = {
     ingediend: 'bg-primary',
@@ -16,6 +18,7 @@ function StatusBadge({ status }) {
   return <span className={`badge ${kleur}`}>{status}</span>;
 }
 
+//html+css voor specifieke status
 function OvereenkomstStatusBadge({ status }) {
   const normalized = status?.toLowerCase();
   if (normalized === 'gevalideerd') return <span className="badge bg-success">Gevalideerd</span>;
@@ -24,6 +27,7 @@ function OvereenkomstStatusBadge({ status }) {
   return <span className="badge bg-secondary">Niet geupload</span>;
 }
 
+//algemene functie voor admin stage details
 export default function AdminStageDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -45,7 +49,7 @@ export default function AdminStageDetail() {
   const isFinalStatus = status === 'goedgekeurd' || status === 'afgekeurd';
   const overeenkomstStatus = stage?.overeenkomst_status?.toLowerCase();
   const isOvereenkomstLocked = overeenkomstStatus === 'gevalideerd' || overeenkomstStatus === 'afgekeurd';
-
+  //logout
   const handleLogout = async () => {
     await logout();
     navigate('/login', { replace: true });
@@ -64,6 +68,7 @@ export default function AdminStageDetail() {
       .finally(() => setLoading(false));
   }, [id]);
 
+  //validatie voor het aanpassen van de status
   const verwerkActie = async (actie) => {
     if (isFinalStatus) {
       setActieError('Dit voorstel heeft een finale status en kan niet meer gewijzigd worden.');
@@ -105,7 +110,7 @@ export default function AdminStageDetail() {
       setSavingAction('');
     }
   };
-
+  //validatie voor de overeenkomst-pdf
   const verwerkOvereenkomstActie = async (actie) => {
     if (!stage?.overeenkomst_bestand_pad) {
       setOvereenkomstError('Er is nog geen overeenkomst geupload.');
@@ -148,6 +153,7 @@ export default function AdminStageDetail() {
     }
   };
 
+  //maken van de body
   let body;
 
   if (loading) {
@@ -334,7 +340,7 @@ export default function AdminStageDetail() {
       </>
     );
   }
-
+  //aanpassen van de admin shell voor deze specifieke pagina
   return (
     <AdminShell
       user={user}

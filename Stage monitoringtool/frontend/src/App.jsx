@@ -1,3 +1,4 @@
+//imports
 import { BrowserRouter, Navigate, Routes, Route } from 'react-router-dom';
 import Login from './pages/login/Login';
 import { AuthProvider } from './context/AuthContext';
@@ -20,7 +21,7 @@ import MentorEvaluaties from './pages/mentor/MentorEvaluaties';
 import DocentStudenten from './pages/docent/DocentStudenten';
 import DocentLogboeken from './pages/docent/DocentLogboeken';
 
-
+//toevoegen van alle browser routes
 export default function App() {
   return (
     <AuthProvider>
@@ -35,10 +36,10 @@ export default function App() {
                 <ChangePasswordFirstLogin />
               </ProtectedRoute>
             }
-            
+
           />
 
-          
+
           <Route
             path="/admin/dashboard"
             element={<Navigate to="/admin/users" replace />}
@@ -58,7 +59,7 @@ export default function App() {
                 <AdminCreateUser />
               </ProtectedRoute>
             }
-            
+
           />
           <Route
             path="/admin/stages"
@@ -85,7 +86,7 @@ export default function App() {
               </ProtectedRoute>
             }
           />
-          
+
 
           <Route path="/dashboard" element={<Navigate to="/docent/studenten" replace />} />
           <Route
@@ -128,8 +129,8 @@ export default function App() {
                 <MentorEvaluaties />
               </ProtectedRoute>
             }
-          />  
-<Route
+          />
+          <Route
             path="/student/stagevoorstellen"
             element={
               <ProtectedRoute allowedRoles={['student']}>
@@ -175,26 +176,26 @@ export default function App() {
           />
 
 
-<Route
+          <Route
             path="/commissie/stages"
             element={
               <ProtectedRoute allowedRoles={['commissie']}>
-              <CommissieOverzicht />
+                <CommissieOverzicht />
               </ProtectedRoute>
             }
           />
 
 
-  <Route
+          <Route
             path="/commissie/stages/:id"
             element={
               <ProtectedRoute allowedRoles={['commissie']}>
                 <StageDetail />
-            </ProtectedRoute>
-         }
+              </ProtectedRoute>
+            }
           />
 
-        
+
         </Routes>
       </BrowserRouter>
     </AuthProvider>

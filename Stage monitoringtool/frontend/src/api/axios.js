@@ -1,3 +1,4 @@
+//endpoint maken in frontend voor backend communicatie
 import axios from "axios";
 
 export default axios.create({

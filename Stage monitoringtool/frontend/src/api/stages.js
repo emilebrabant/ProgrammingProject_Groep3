@@ -1,4 +1,3 @@
-
 // Alle API calls naar de backend voor stagevoorstellen
 import axiosInstance from './axios.js';
 
@@ -14,6 +13,7 @@ export const stageIndienen = async (data) => {
     return response.data;
 };
 
+//aanpassen van een stage
 export const stageAanpassen = async (id, data) => {
     const response = await axiosInstance.patch(`/stages/${id}`, data);
     return response.data;
@@ -39,28 +39,32 @@ export const getStageById = async (id) => {
     return response.data;
 };
 
+//krijg historiek van 1bepaalde stage
 export const getStageHistoriek = async (id) => {
     const response = await axiosInstance.get(`/stages/${id}/historiek`);
     return response.data;
 };
 
+//updaten van stage verificatie
 export const verwerkStageBeslissing = async (id, data) => {
     const response = await axiosInstance.patch(`/stages/${id}/beslissing`, data);
     return response.data;
 };
 
+//uploaden van een stagebestand
 export const uploadStageOvereenkomst = async (id, file) => {
     const formData = new FormData();
     formData.append('bestand', file);
-
     const response = await axiosInstance.post(`/stages/${id}/overeenkomst`, formData);
     return response.data;
 };
 
+//krijg het stagebestand van een bepaalde stage
 export const getStageOvereenkomstUrl = (id) => {
     return `${axiosInstance.defaults.baseURL}/stages/${id}/overeenkomst`;
 };
 
+//valideren van stagebestand
 export const valideerStageOvereenkomst = async (id, data) => {
     const response = await axiosInstance.patch(`/stages/${id}/overeenkomst/validatie`, data);
     return response.data;

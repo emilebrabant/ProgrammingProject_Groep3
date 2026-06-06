@@ -1,3 +1,4 @@
+//api routes met gebruik van de axios endpoint
 import axiosInstance from './axios.js';
 
 //zelfevaluatie ophalen als student

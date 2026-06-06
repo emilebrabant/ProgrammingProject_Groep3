@@ -1,3 +1,4 @@
+//imports
 import { useEffect, useMemo, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import api from '../../api/axios';
@@ -8,6 +9,7 @@ const roleOptions = ['student', 'commissie', 'docent', 'mentor', 'admin'];
 
 const noticeTimeout = 3000;
 
+//admin user portaal
 export default function AdminUsers() {
   const [users, setUsers] = useState([]);
   const [drafts, setDrafts] = useState({});
@@ -20,11 +22,13 @@ export default function AdminUsers() {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
 
+  //logout
   const handleLogout = async () => {
     await logout();
     navigate('/login', { replace: true });
   };
 
+  //timeout
   const showNotice = (type, text) => {
     setNotice({ type, text });
     window.clearTimeout(showNotice.timeoutId);
@@ -33,6 +37,7 @@ export default function AdminUsers() {
     }, noticeTimeout);
   };
 
+  //laad alle gebruikers
   const loadUsers = async () => {
     try {
       const response = await api.get('/users');
@@ -62,6 +67,7 @@ export default function AdminUsers() {
     };
   }, []);
 
+  //updaten van gebruiker
   const updateUser = async (id, payload) => {
     setSavingId(id);
 
@@ -76,6 +82,7 @@ export default function AdminUsers() {
     }
   };
 
+  //verwijderen van gebruiker
   const deleteUser = async (id) => {
     const confirmed = window.confirm('Weet je zeker dat je deze gebruiker wilt verwijderen?');
     if (!confirmed) return;
@@ -93,6 +100,7 @@ export default function AdminUsers() {
     }
   };
 
+  //opslaan van tijdelijke update
   const updateDraft = (id, field, value) => {
     setDrafts((currentDrafts) => ({
       ...currentDrafts,
@@ -103,6 +111,7 @@ export default function AdminUsers() {
     }));
   };
 
+  //opslaan wat de changes zijn
   const hasChanges = (account) => {
     const draft = drafts[account.id];
     if (!draft) return false;
@@ -112,6 +121,7 @@ export default function AdminUsers() {
     return changedName || changedRole;
   };
 
+  //doorvoeren van de changes
   const saveChanges = async (account) => {
     const draft = drafts[account.id];
     if (!draft) return;
@@ -135,6 +145,7 @@ export default function AdminUsers() {
     await updateUser(account.id, payload);
   };
 
+  //sortereen van de userss
   const filteredAndSortedUsers = useMemo(() => {
     const query = searchTerm.trim().toLowerCase();
 
@@ -165,6 +176,7 @@ export default function AdminUsers() {
     });
   }, [searchTerm, sortMode, users]);
 
+  //aanvullen van de shell met bootstrap elementen
   return (
     <AdminShell
       user={user}

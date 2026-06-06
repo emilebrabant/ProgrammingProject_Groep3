@@ -1,3 +1,4 @@
+//imports
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
@@ -9,8 +10,10 @@ import {
     deleteCompetentie,
 } from '../../api/competenties';
 
+//maken van leeg formulier
 const leegFormulier = { naam: '', omschrijving: '', gewicht: '' };
 
+//algemene admin competenties functie
 export default function AdminCompetencies() {
     const { user, logout } = useAuth();
     const navigate = useNavigate();
@@ -24,7 +27,6 @@ export default function AdminCompetencies() {
     const [formError, setFormError] = useState('');
     const [formBezig, setFormBezig] = useState(false);
 
-
     const [bewerkId, setBewerkId] = useState(null);
     const [bewerkForm, setBewerkForm] = useState({});
     const [bewerkBezig, setBewerkBezig] = useState(false);
@@ -32,20 +34,20 @@ export default function AdminCompetencies() {
 
     const [verwijderBezig, setVerwijderBezig] = useState(null);
 
-
     const [bericht, setBericht] = useState({ type: '', tekst: '' });
-
+    //logout
     const handleLogout = async () => {
         await logout();
         navigate('/login', { replace: true });
     };
 
+    //bericht maken
     const toonBericht = (type, tekst) => {
         setBericht({ type, tekst });
         setTimeout(() => setBericht({ type: '', tekst: '' }), 3000);
     };
 
-
+    //verkrijgen en inladen van alle competenties
     const laadCompetenties = async () => {
         setLoading(true);
         setError('');
@@ -161,6 +163,7 @@ export default function AdminCompetencies() {
         }
     };
 
+    //aanvullen van de admin shell met de admin competenties pagina details
     return (
         <AdminShell
             user={user}

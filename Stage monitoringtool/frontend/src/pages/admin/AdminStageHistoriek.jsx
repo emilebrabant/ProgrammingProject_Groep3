@@ -1,9 +1,11 @@
+//imports
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getAlleStages } from '../../api/stages';
 import { useAuth } from '../../context/AuthContext';
 import AdminShell from './AdminShell';
 
+//status css
 function StatusBadge({ status }) {
   const kleuren = {
     ingediend: 'bg-primary',
@@ -16,6 +18,7 @@ function StatusBadge({ status }) {
   return <span className={`badge ${kleur}`}>{status}</span>;
 }
 
+//status html
 function OvereenkomstStatusBadge({ status }) {
   const normalized = status?.toLowerCase();
   if (normalized === 'gevalideerd') return <span className="badge bg-success">Gevalideerd</span>;
@@ -24,6 +27,7 @@ function OvereenkomstStatusBadge({ status }) {
   return <span className="text-muted">Niet geupload</span>;
 }
 
+//opslaan van statussen in variabelen
 const statussen = [
   { value: '', label: 'Alle' },
   { value: 'ingediend', label: 'ingediend' },
@@ -32,6 +36,7 @@ const statussen = [
   { value: 'aanpassing_vereist', label: 'aanpassing vereist' }
 ];
 
+//algemene functie voor admin stage historiek
 export default function AdminStageHistoriek() {
   const navigate = useNavigate();
   const { user, logout } = useAuth();
@@ -40,6 +45,7 @@ export default function AdminStageHistoriek() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
+  //logout
   const handleLogout = async () => {
     await logout();
     navigate('/login', { replace: true });
@@ -55,6 +61,7 @@ export default function AdminStageHistoriek() {
       .finally(() => setLoading(false));
   }, [statusFilter]);
 
+  //bijwerken met de admin shell met extra info
   return (
     <AdminShell
       user={user}

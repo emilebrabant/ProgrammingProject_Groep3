@@ -4,7 +4,7 @@ import api from "../api/axios";
 // create context
 const AuthContext = createContext();
 
-// provider component
+// slaat user informatie op voor het gebruik van de app
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
