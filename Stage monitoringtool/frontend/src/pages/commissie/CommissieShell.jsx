@@ -1,3 +1,8 @@
+// CommissieShell
+// - Doel: layout en navigatie wrapper voor commissie-views
+// - Verzorgt: header, gebruikersinfo, refresh en logout knoppen
+// - Gebruik: wrap pagina's zoals CommissieOverzicht en StageDetail
+
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 
@@ -6,11 +11,12 @@ function CommissieShell({ title, subtitle, activeTab, children }) {
   const navigate = useNavigate();
   const tabClass = (tabName) => `btn ${activeTab === tabName ? 'btn-dark' : 'btn-outline-dark'}`;
 
+  // Uitloggen en terug naar login
   const handleLogout = async () => {
     await logout();
     navigate('/login', { replace: true });
   };
-
+  
   return (
     <div style={{ minHeight: '100vh', background: 'linear-gradient(180deg, #fffaf1 0%, #fff1d6 100%)' }}>
       <div className="container py-5">
@@ -40,6 +46,7 @@ function CommissieShell({ title, subtitle, activeTab, children }) {
           </Link>
         </div>
 
+        {/* Pagina-specifieke content wordt hier gerenderd */}
         {children}
       </div>
     </div>

@@ -1,4 +1,6 @@
-// Commissielid ziet alle ingediende voorstellen + filteren op status
+// Commissielid overzichtpagina
+// - Doel: Toon en filter alle ingediende stagevoorstellen voor commissieleden
+// - Belangrijk: navigatie naar detailpagina bij klikken op rij
 
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -18,7 +20,7 @@ function StatusBadge({ status }) {
     return <span className={`badge ${kleur}`}>{status}</span>;
 }
 
-// Alle mogelijke statussen voor filterknopppen
+// Alle mogelijke statussen voor filterknoppen
 const STATUSSEN = [
     { value: '', label: 'Alle' },
     { value: 'ingediend', label: 'ingediend' },
@@ -34,7 +36,7 @@ export default function CommissieOverzicht() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
 
-// Haal stages opnieuw op wnr filter verandert
+// Haal stages opnieuw op wanneer filter verandert
     useEffect(() => {
         setLoading(true);
         getAlleStages(statusFilter)
@@ -42,6 +44,8 @@ export default function CommissieOverzicht() {
             .catch(() => setError('Kon voorstellen niet laden'))
             .finally(() => setLoading(false));
 }, [statusFilter]);
+
+// Render: knoprij voor filters + tabel met voorstellen
 
     return (
         <CommissieShell

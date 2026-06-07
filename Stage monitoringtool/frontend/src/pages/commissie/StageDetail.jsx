@@ -1,11 +1,13 @@
-// Detailpagina van een stagevoorstel voor commissie
+// Commissie StageDetail
+// - Doel: Laat commissieleden de inhoud van een voorstel zien en verwerk beslissingen
+// - Belangrijk: bevat handlers voor goedkeuren/afkeuren/aanpassing_vereist
 
 import { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { getStageById, getStageHistoriek, getStageOvereenkomstUrl, verwerkStageBeslissing } from '../../api/stages.js';
 import CommissieShell from './CommissieShell';
 
-//gekleurde badge per status
+// Gekleurde badge per status
 function StatusBadge({ status }) {
     const kleuren = {
         'ingediend': 'bg-primary',
@@ -19,8 +21,11 @@ function StatusBadge({ status }) {
 }
 
 export default function StageDetail() {
+    // route + navigation
     const { id } = useParams();
     const navigate = useNavigate();
+
+    // lokale state
     const [stage, setStage] = useState(null);
     const [historiek, setHistoriek] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -30,12 +35,13 @@ export default function StageDetail() {
     const [actieSuccess, setActieSuccess] = useState('');
     const [savingAction, setSavingAction] = useState('');
 
+    // afgeleide flags
     const status = stage?.status?.toLowerCase();
     const isFinalStatus = status === 'goedgekeurd' || status === 'afgekeurd';
     const overeenkomstStatus = stage?.overeenkomst_status?.toLowerCase();
     const overeenkomstIsGevalideerd = overeenkomstStatus === 'gevalideerd';
 
-//Laad de details van dit voorstel
+    // Laad details en historiek bij mount of id-wijziging
     useEffect(() => {
         Promise.all([getStageById(id), getStageHistoriek(id)])
             .then(([stageData, historiekData]) => {
@@ -44,8 +50,9 @@ export default function StageDetail() {
             })
             .catch(() => setError('Kon voorstel niet laden'))
             .finally(() => setLoading(false));
-}, [id]);
+    }, [id]);
 
+    // Handler: verwerk commissie-beslissing via API
     const verwerkActie = async (actie) => {
         if (isFinalStatus) {
             setActieError('Dit voorstel heeft een finale status en kan niet meer gewijzigd worden.');
