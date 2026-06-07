@@ -1,3 +1,6 @@
+// DocentStudenten
+// - Doel: Overzicht van studenten die aan deze docent gekoppeld zijn
+// - Render: tabel met naam, email, bedrijf en status
 import { useEffect, useState } from 'react';
 import DocentShell from './DocentShell';
 
@@ -6,6 +9,7 @@ export default function DocentStudenten() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
+  // Haal gekoppelde studenten van de API bij mount
   useEffect(() => {
     fetch('http://localhost:3000/dashboard/docent', { credentials: 'include' })
       .then(async (res) => {
@@ -20,14 +24,17 @@ export default function DocentStudenten() {
       .finally(() => setLoading(false));
   }, []);
 
+  // Render binnen DocentShell (layout + navigatie)
   return (
     <DocentShell
       title="Studenten"
       subtitle="Overzicht van studenten die aan jou gekoppeld zijn."
       activeTab="studenten"
     >
+      {/* Fout- en laadstatus tonen */}
       {error && <div className="alert alert-danger">{error}</div>}
 
+      {/* Laden of lege lijst of tabel met studenten */}
       {loading ? (
         <p>Laden...</p>
       ) : studenten.length === 0 ? (

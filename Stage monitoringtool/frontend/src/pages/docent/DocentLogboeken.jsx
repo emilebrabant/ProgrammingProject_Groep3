@@ -2,20 +2,26 @@ import { useEffect, useState } from 'react';
 import DocentShell from './DocentShell';
 import { getDocentLogboeken, voegFeedbackToe } from '../../api/stages';
 
+// DocentLogboeken
+// - Doel: Laat docenten logboeken van hun gekoppelde studenten zien en geeft feedback
+// - Belangrijk: bevat handler voor feedback en groepering per student
 export default function DocentLogboeken() {
+    // data + status
     const [logboeken, setLogboeken] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
 
-
+    // feedback UI state per logboek
     const [feedbackTekst, setFeedbackTekst] = useState({});
     const [bezig, setBezig] = useState(null);
     const [berichtPerLogboek, setBerichtPerLogboek] = useState({});
 
+    // laad logboeken bij mount
     useEffect(() => {
         laadLogboeken();
     }, []);
 
+    // API: logboeken ophalen
     const laadLogboeken = async () => {
         setLoading(true);
         setError('');
@@ -29,6 +35,7 @@ export default function DocentLogboeken() {
         }
   };
 
+    // Handler: feedback toevoegen voor specifiek logboek
     const handleFeedback = async (logboekId) => {
         const tekst = feedbackTekst[logboekId] || '';
         if (!tekst.trim()) {
@@ -60,7 +67,7 @@ export default function DocentLogboeken() {
         }
     };
 
-    //logboeken groeperen per student
+    // Hulpfunctie: groepeer logboeken per student voor weergave
     const groeperenPerStudent = () => {
         const groepen = {};
         logboeken.forEach((l) => {
@@ -79,6 +86,7 @@ export default function DocentLogboeken() {
 
     const studentGroepen = groeperenPerStudent();
 
+    // Render via DocentShell
     return (
         <DocentShell
             title="Logboeken"
