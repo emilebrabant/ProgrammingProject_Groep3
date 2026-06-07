@@ -1,3 +1,7 @@
+// Login.jsx
+// - Doel: authenticatieformulier voor alle gebruikers
+// - Belangrijk: redirect naar rol-specifiek dashboard na succesvolle login
+// Imports: react hooks, router navigate, axios wrapper en auth context
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import api from '../../api/axios';
@@ -11,6 +15,7 @@ export default function Login() {
   const navigate = useNavigate();
   const { user, loading, setUser } = useAuth();
 
+  // Effect: indien al ingelogd, direct doorsturen (eerste-login route of rol-dashboard)
   useEffect(() => {
     if (!loading && user) {
       if (user.eerste_login) {
@@ -46,10 +51,12 @@ export default function Login() {
     }
   };
 
+  // Render: eenvoudige login form met foutmelding
   return (
     <div className="container mt-5" style={{ maxWidth: '400px' }}>
       <h2 className="mb-4">Inloggen</h2>
 
+      {/* Foutmelding weergeven indien API fout */}
       {fout && (
         <div className="alert alert-danger">{fout}</div>
       )}

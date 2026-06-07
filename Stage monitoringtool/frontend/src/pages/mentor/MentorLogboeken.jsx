@@ -2,14 +2,20 @@ import { useEffect, useState } from 'react';
 import MentorShell from './MentorShell';
 import { getMentorLogboeken, aftekenenLogboek } from '../../api/stages';
 
+// MentorLogboeken
+// - Doel: Mentor kan wekelijkse logboeken inzien en aftekenen
+// - Belangrijk: aftekenen kan optioneel commentaar meesturen
 export default function MentorLogboeken() {
+    // data + status
     const [logboeken, setLogboeken] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
+    // UI state per logboek
     const [commentaren, setCommentaren] = useState({});
     const [bezig, setBezig] = useState(null);
     const [berichtPerLogboek, setBerichtPerLogboek] = useState({});
 
+    // laad logboeken bij mount
     useEffect(() => {
         laadLogboeken();
     }, []);
@@ -27,6 +33,7 @@ export default function MentorLogboeken() {
         }
     };
 
+    // Handler: aftekenen met optioneel commentaar
     const handleAftekenen = async (logboekId) => {
         setBezig(logboekId);
         setBerichtPerLogboek((prev) => ({ ...prev, [logboekId]: null }));
@@ -48,6 +55,7 @@ export default function MentorLogboeken() {
         }
     };
 
+    // Groepeer logboeken per student voor overzicht
     const groeperenPerStudent = () => {
         const groepen = {};
         logboeken.forEach((l) => {
@@ -66,6 +74,7 @@ export default function MentorLogboeken() {
 
     const studentGroepen = groeperenPerStudent();
 
+    // Render via MentorShell
     return (
         <MentorShell
             title="Logboeken"

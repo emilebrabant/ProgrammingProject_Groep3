@@ -4,6 +4,10 @@ import { getMijnStages, getStageOvereenkomstUrl, uploadStageOvereenkomst } from 
 import { useAuth } from '../../context/AuthContext';
 import StudentShell from './StudentShell';
 
+// StudentStagevoorstellen
+// - Doel: Laat studenten hun stagevoorstellen zien, uploaden van overeenkomst
+// - Belangrijk: PDF-validatie bij upload, overzicht van status en feedback
+
 function statusClass(status) {
   const normalized = status?.toLowerCase();
   if (normalized === 'goedgekeurd') return 'bg-success';
@@ -49,6 +53,8 @@ export default function StudentStagevoorstellen() {
       .catch(() => setError('Kon stagevoorstellen niet laden'))
       .finally(() => setLoading(false));
   }, []);
+
+  // Hernoemen/herladen van stages vanuit API
 
   const heeftActiefVoorstel = useMemo(
     () => stages.some((stage) => stage.status?.toLowerCase() !== 'afgekeurd'),
@@ -99,6 +105,8 @@ export default function StudentStagevoorstellen() {
       setUploadingStageId(null);
     }
   };
+
+  // Logout en navigatie
 
   return (
     <StudentShell

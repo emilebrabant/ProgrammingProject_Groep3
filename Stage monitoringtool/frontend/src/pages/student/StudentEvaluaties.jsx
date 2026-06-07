@@ -4,10 +4,14 @@ import { useAuth } from '../../context/AuthContext';
 import StudentShell from './StudentShell';
 import { getStudentEvaluatie, slaZelfevaluatieOp } from '../../api/evaluaties';
 
+// StudentEvaluaties
+// - Doel: Laat studenten hun zelfevaluatie invullen per competentie
+// - Belangrijk: wanneer `vergrendeld` is true is bewerken niet mogelijk
 export default function StudentEvaluaties() {
     const navigate = useNavigate();
     const { user, logout } = useAuth();
 
+    // data + loading state
     const [competenties, setCompetenties] = useState([]);
     const [scores, setScores] = useState({});
     const [vergrendeld, setVergrendeld] = useState(false);
@@ -17,7 +21,7 @@ export default function StudentEvaluaties() {
     // Tekstvelden per competentie bijhouden
     const [beschrijvingen, setBeschrijvingen] = useState({});
 
-    //ppslaan status per competentie
+    // Opslaan status per competentie
     const [bezig, setBezig] = useState(null);
     const [berichtPerCompetentie, setBerichtPerCompetentie] = useState({});
 
@@ -26,6 +30,7 @@ export default function StudentEvaluaties() {
         navigate('/login', { replace: true });
     };
 
+    // Laad evaluatie + bestaande teksten
     const laadEvaluatie = async () => {
         setLoading(true);
         setError(''); 
@@ -53,6 +58,7 @@ export default function StudentEvaluaties() {
         laadEvaluatie();
       }, []); 
 
+    // Handler: opslaan van zelfevaluatie per competentie
     const handleOpslaan = async (competentie_id) => {
         setBezig(competentie_id);
         setBerichtPerCompetentie((prev) => ({ ...prev, [competentie_id]: null }));
@@ -149,7 +155,7 @@ export default function StudentEvaluaties() {
                                             onClick={() => handleOpslaan(competentie.id)}
                                             disabled={bezig === competentie.id}
                                         >
-                                            {bezig === competentie.id ? 'Opslaan...' : 'Opslaan'}
+                                            {bezig === competitie.id ? 'Opslaan...' : 'Opslaan'}
                                         </button>
                            </div>
                                 )}

@@ -2,25 +2,30 @@ import { useEffect, useState } from 'react';
 import MentorShell from './MentorShell';
 import { getMentorEvaluatie, slaMentorScoreOp, dientEvaluatieIn } from '../../api/evaluaties';
 
+// MentorEvaluaties
+// - Doel: Laat mentoren scores en feedback geven per competentie
+// - Belangrijk: validatie van scores (0-20) en indienen van evaluatie
 export default function MentorEvaluaties() {
+    // hoofdzakelijke data en status
     const [competenties, setCompetenties] = useState([]);
     const [scores, setScores] = useState({});
     const [evaluatie, setEvaluatie] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
 
-    //score en feedback per competentie bijhouden
+    // score/feedback state per competentie
     const [mentorScores, setMentorScores] = useState({});
     const [mentorFeedback, setMentorFeedback] = useState({});
 
-//status per competentie
+    // UI status per competentie
     const [bezig, setBezig] = useState(null);
     const [berichtPerCompetentie, setBerichtPerCompetentie] = useState({});
 
-    //indienen status
+    // indienen status
     const [indievenBezig, setIndievenBezig] = useState(false);
     const [indievenBericht, setIndievenBericht] = useState(null);
 
+    // Laad evaluatie en competenties van API
     const laadEvaluatie = async () => {
         setLoading(true);
         setError('');
@@ -29,7 +34,7 @@ export default function MentorEvaluaties() {
             setEvaluatie(data.evaluatie);
             setCompetenties(data.competenties || []);
 
-//scores omzetten naar object per competentie_id
+            // scores omzetten naar maps per competentie_id
             const scoresMap = {};
             const mentorScoresMap = {};
             const mentorFeedbackMap = {};
@@ -54,6 +59,7 @@ export default function MentorEvaluaties() {
         laadEvaluatie();
     }, []);
 
+    // Handler: opslaan van mentor score/feedback voor één competentie
     const handleOpslaan = async (competentie_id) => {
         setBezig(competentie_id);
         setBerichtPerCompetentie((prev) => ({ ...prev, [competentie_id]: null }));
@@ -92,6 +98,7 @@ export default function MentorEvaluaties() {
         }
     };
 
+    // Handler: indienen van volledige evaluatie
     const handleIndienen = async () => {
         const bevestigd = window.confirm(
             'Ben je zeker dat je de evaluatie wilt indienen? Dit kan niet meer ongedaan gemaakt worden.'
@@ -115,6 +122,7 @@ export default function MentorEvaluaties() {
         }
     };
 
+    // Render via MentorShell
     return (
         <MentorShell
             title="Evaluatie"

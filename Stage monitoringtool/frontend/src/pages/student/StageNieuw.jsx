@@ -38,6 +38,10 @@ export default function StageNieuw() {
     const [loadingStage, setLoadingStage] = useState(isEditMode);
     const [stageInfo, setStageInfo] = useState(null);
 
+    // StageNieuw
+    // - Doel: Nieuw voorstel indienen of bestaand voorstel aanpassen
+    // - Validatie: zorgt dat verplichte velden aanwezig zijn en data logisch is
+
     useEffect(() => {
         getDocenten()
             .then((data) => setDocenten(data.docenten))
@@ -103,6 +107,8 @@ export default function StageNieuw() {
 
         return newErrors;
     };
+
+    // Handler: indienen of aanpassen van voorstel
 
     const handleSubmit = async (e) => {
         e.preventDefault();

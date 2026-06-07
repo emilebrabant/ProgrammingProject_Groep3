@@ -2,6 +2,9 @@ import { useEffect, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { getMijnStages } from '../../api/stages.js';
 
+// StudentShell
+// - Wrapper voor alle student views: header, tabs en toegangsbepaling
+// - Props: `heeftGevalideerdeOvereenkomst` bepaalt toegang tot logboeken/evaluaties
 const toegangMeldingTekst = 'Logboeken en evaluaties komen pas vrij nadat je overeenkomst door een admin is gevalideerd.';
 
 function StudentShell({ user, onLogout, title, subtitle, activeTab, children, heeftGevalideerdeOvereenkomst }) {
@@ -44,6 +47,8 @@ function StudentShell({ user, onLogout, title, subtitle, activeTab, children, he
       actief = false;
     };
   }, [heeftGevalideerdeOvereenkomst]);
+
+  // Als er een doorgestuurde melding is (redirect), toon die kort
 
   useEffect(() => {
     const doorgestuurdeMelding = location.state?.toegangMelding;

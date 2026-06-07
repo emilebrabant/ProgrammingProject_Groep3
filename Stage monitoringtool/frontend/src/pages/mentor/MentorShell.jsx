@@ -1,3 +1,6 @@
+// MentorShell
+// - Doel: layout en navigatie wrapper voor mentor-views
+// - Verzorgt: header, gebruikersinfo, refresh en logout knoppen
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 
@@ -6,6 +9,7 @@ function MentorShell({ title, subtitle, activeTab, children }) {
   const navigate = useNavigate();
   const tabClass = (tabName) => `btn ${activeTab === tabName ? 'btn-dark' : 'btn-outline-dark'}`;
 
+  // Uitloggen en terug naar login
   const handleLogout = async () => {
     await logout();
     navigate('/login', { replace: true });
@@ -34,6 +38,7 @@ function MentorShell({ title, subtitle, activeTab, children }) {
           </div>
         </div>
 
+        {/* Navigatie tabs voor mentor functionaliteit */}
         <div className="d-flex flex-wrap gap-2 mb-4">
           <Link className={tabClass('logboeken')} to="/mentor/logboeken">
             Logboeken
@@ -46,6 +51,7 @@ function MentorShell({ title, subtitle, activeTab, children }) {
           </Link>
         </div>
 
+        {/* Pagina-specifieke content */}
         {children}
       </div>
     </div>

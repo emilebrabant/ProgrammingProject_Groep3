@@ -4,6 +4,10 @@ import { createStudentLogboek, getStudentLogboeken, getLogboekFeedback } from '.
 import { useAuth } from '../../context/AuthContext';
 import StudentShell from './StudentShell';
 
+// StudentLogboeken
+// - Doel: Student kan wekelijkse logboeken toevoegen en feedback lezen
+// - Belangrijk: validatie van weeknummer en verplichte velden
+
 
 
 export default function StudentLogboeken() {
@@ -44,6 +48,8 @@ export default function StudentLogboeken() {
       .catch(() => setError('Kon logboeken niet laden'))
       .finally(() => setLoading(false));
   }, []);
+
+  // Form handlers en validatie
 
 
 
@@ -105,6 +111,8 @@ export default function StudentLogboeken() {
       setSubmitLoading(false);
     }
   };
+
+  // Logout handler
 
   const handleLogout = async () => {
     await logout();

@@ -1,11 +1,15 @@
 import { useEffect, useState } from 'react';
 import MentorShell from './MentorShell';
 
+// MentorKoppelingStudenten
+// - Doel: Toon studenten gekoppeld aan mentor's bedrijf
+// - Gebruikt: fetch naar backend dashboard endpoint
 export default function MentorKoppelingStudenten() {
   const [studenten, setStudenten] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
+  // laad gekoppelde studenten bij mount
   useEffect(() => {
     fetch('http://localhost:3000/dashboard/mentor', { credentials: 'include' })
       .then(async (res) => {
@@ -20,6 +24,7 @@ export default function MentorKoppelingStudenten() {
       .finally(() => setLoading(false));
   }, []);
 
+  // Render binnen MentorShell
   return (
     <MentorShell
       title="Koppeling studenten"

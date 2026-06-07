@@ -1,3 +1,6 @@
+// ChangePasswordFirstLogin.jsx
+// - Doel: Verwerkt eerste-login flow waarbij gebruiker verplicht wachtwoord moet wijzigen
+// - Belangrijk: na succesvolle wijziging doorsturen naar rol-dashboard
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import api from '../../api/axios';
@@ -5,6 +8,7 @@ import { useAuth } from '../../context/AuthContext';
 import { getDashboardRedirect } from '../dashboardRedirect';
 
 export default function ChangePasswordFirstLogin() {
+  // formulierstate
   const [huidigWachtwoord, setHuidigWachtwoord] = useState('');
   const [nieuwWachtwoord, setNieuwWachtwoord] = useState('');
   const [bevestigNieuwWachtwoord, setBevestigNieuwWachtwoord] = useState('');
@@ -13,10 +17,12 @@ export default function ChangePasswordFirstLogin() {
   const navigate = useNavigate();
   const { user, setUser, logout } = useAuth();
 
+  // helper: redirect naar dashboard op basis van rol
   const goToRoleDashboard = (rol) => {
     navigate(getDashboardRedirect(rol), { replace: true });
   };
 
+  // Handler: verzenden van wachtwoord-wijzigingsverzoek naar API
   const handleSubmit = async (event) => {
     event.preventDefault();
     setError('');
@@ -29,6 +35,7 @@ export default function ChangePasswordFirstLogin() {
         bevestigNieuwWachtwoord
       });
 
+      // zet nieuwe user in context en navigeer naar rol-dashboard
       setUser(response.data.user);
       goToRoleDashboard(response.data.user.rol);
     } catch (requestError) {
@@ -38,6 +45,7 @@ export default function ChangePasswordFirstLogin() {
     }
   };
 
+  // Render: formulier met basisvalidatie (min length) en logout-knop
   return (
     <div className="container mt-5" style={{ maxWidth: '520px' }}>
       <div className="card shadow-sm border-0">
